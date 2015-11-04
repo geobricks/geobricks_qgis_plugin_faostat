@@ -21,11 +21,12 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
 from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
+from geobricks_faostat_connector import get_items, get_elements
 import os.path
 
 
@@ -184,15 +185,42 @@ class geobricks_qgis_plugin_faostat:
 
     def update_items_elements(self):
 
+        self.update_items()
+        self.update_elements()
 
     def update_items(self):
-        print "here"
 
-    def update_items(self):
-        print "here"
+        self.dlg.cbItem.clear()
+
+        data = get_items('QC')
+
+        values = []
+        self.elements = {}
+        for d in data:
+            self.domains[d['label']] = d
+            values.append(d['label'])
+
+        values.sort()
+        self.dlg.cbItem.addItems(values)
+
+    def update_elements(self):
+
+        self.dlg.cbElement.clear()
+
+        data = get_elements('QC')
+
+        values = []
+        self.elements = {}
+        for d in data:
+            self.domains[d['label']] = d
+            values.append(d['label'])
+
+        values.sort()
+        self.dlg.cbElement.addItems(values)
+
 
     def initialize_domains(self):
-        self.dlg.cbIndicator.clear()
+        self.dlg.cbDomain.clear()
 
         # TODO: connect to APIs
         data = [
@@ -210,8 +238,11 @@ class geobricks_qgis_plugin_faostat:
             values.append(d['name'])
 
         values.sort()
-        self.dlg.cbIndicator.addItems(values)
+        self.dlg.cbDomain.addItems(values)
 
+    def select_output_file(self):
+        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Folder")
+        self.dlg.download_path.setText(filename)
 
     def run(self):
 
@@ -227,13 +258,15 @@ class geobricks_qgis_plugin_faostat:
             # initialize selectors
             self.initialize_domains()
 
+            self.update_items_elements()
+
             self.dlg.cbDomain.currentIndexChanged.connect(self.update_items_elements)
 
             # add select download folder
             self.dlg.pushButton.clicked.connect(self.select_output_file)
 
             # on OK and Cancel click
-            self.dlg.buttonBox.accepted.connect(self.process_layers)
+            #self.dlg.buttonBox.accepted.connect(self.process_layers)
             self.dlg.buttonBox.rejected.connect(self.dlg.close)
 
         # show the dialog

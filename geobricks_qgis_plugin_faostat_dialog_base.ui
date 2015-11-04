@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>World Bank API Plugin</string>
   </property>
-  <widget class="QComboBox" name="cdItem">
+  <widget class="QComboBox" name="cbItem">
    <property name="geometry">
     <rect>
      <x>10</x>
