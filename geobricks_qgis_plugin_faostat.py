@@ -185,14 +185,17 @@ class geobricks_qgis_plugin_faostat:
 
     def update_items_elements(self):
 
-        self.update_items()
-        self.update_elements()
+        domain_name = self.dlg.cbDomain.currentText()
+        domain_code = self.domains[domain_name]
 
-    def update_items(self):
+        self.update_items(domain_code)
+        self.update_elements(domain_code)
+
+    def update_items(self, domain_code):
 
         self.dlg.cbItem.clear()
 
-        data = get_items('QC')
+        data = get_items(domain_code)
 
         values = []
         self.elements = {}
@@ -203,11 +206,11 @@ class geobricks_qgis_plugin_faostat:
         values.sort()
         self.dlg.cbItem.addItems(values)
 
-    def update_elements(self):
+    def update_elements(self, domain_code):
 
         self.dlg.cbElement.clear()
 
-        data = get_elements('QC')
+        data = get_elements(domain_code)
 
         values = []
         self.elements = {}
@@ -227,6 +230,10 @@ class geobricks_qgis_plugin_faostat:
             {
                 'name': 'Production - Crops',
                 'id': 'QC'
+            },
+            {
+                'name': 'Production - Crops Processed',
+                'id': 'QD'
             }
         ]
 
