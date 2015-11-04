@@ -1,29 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>geobricks_qgis_plugin_faostatDialogBase</class>
- <widget class="QDialog" name="geobricks_qgis_plugin_faostatDialogBase">
+ <class>GeobricksQgisPluginWorldBankDialogBase</class>
+ <widget class="QDialog" name="GeobricksQgisPluginWorldBankDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>210</height>
+    <width>393</width>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FAOSTAT Data Downloader</string>
+   <string>World Bank API Plugin</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QComboBox" name="cdItem">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>231</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>282</y>
+     <width>191</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="progressText">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>260</y>
+     <width>371</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbDomain">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>231</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>280</y>
+     <width>176</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="download_path">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>281</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="open_in_qgis">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>230</y>
+     <width>361</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Open in QGIS when the process is complete</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>190</y>
+     <width>81</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>...</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>170</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download Folder&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>59</width>
-     <height>16</height>
+     <width>81</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Domain</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Domain&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -31,12 +145,12 @@
     <rect>
      <x>10</x>
      <y>60</y>
-     <width>59</width>
-     <height>16</height>
+     <width>81</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Element</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Item&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
@@ -44,135 +158,22 @@
     <rect>
      <x>10</x>
      <y>110</y>
-     <width>59</width>
-     <height>16</height>
+     <width>81</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Item</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Element&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="cbElement">
    <property name="geometry">
     <rect>
-     <x>8</x>
-     <y>27</y>
-     <width>256</width>
-     <height>26</height>
+     <x>10</x>
+     <y>130</y>
+     <width>231</width>
+     <height>27</height>
     </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Please select a domain...</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Crops</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Crops Processed</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Live Animals</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Livestock Primary</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Livestock Processed</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Production Indices</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production: Vaue of Agricultural Production</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QComboBox" name="comboBox_2">
-   <property name="geometry">
-    <rect>
-     <x>8</x>
-     <y>77</y>
-     <width>256</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Please select an element...</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Area Harvested</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Yield</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Production Quantity</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Seed</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QComboBox" name="comboBox_3">
-   <property name="geometry">
-    <rect>
-     <x>8</x>
-     <y>127</y>
-     <width>256</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Please select an item...</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Apples</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Wheat</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>3</x>
-     <y>165</y>
-     <width>264</width>
-     <height>35</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Download Data</string>
    </property>
   </widget>
  </widget>

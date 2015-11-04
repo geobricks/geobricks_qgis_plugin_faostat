@@ -68,6 +68,9 @@ class geobricks_qgis_plugin_faostat:
         self.toolbar = self.iface.addToolBar(u'geobricks_qgis_plugin_faostat')
         self.toolbar.setObjectName(u'geobricks_qgis_plugin_faostat')
 
+        # TODO: check if there is a better way to handle inizialition
+        self.initialized = False
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -179,14 +182,59 @@ class geobricks_qgis_plugin_faostat:
         del self.toolbar
 
 
+    def update_items_elements(self):
+
+
+    def update_items(self):
+        print "here"
+
+    def update_items(self):
+        print "here"
+
+    def initialize_domains(self):
+        self.dlg.cbIndicator.clear()
+
+        # TODO: connect to APIs
+        data = [
+            {
+                'name': 'Production - Crops',
+                'id': 'QC'
+            }
+        ]
+
+        # cache codes
+        values = []
+        self.domains = {}
+        for d in data:
+            self.domains[d['name']] = d['id']
+            values.append(d['name'])
+
+        values.sort()
+        self.dlg.cbIndicator.addItems(values)
+
+
     def run(self):
-        """Run method that performs all the real work"""
+
+        # if the interface is initiated
+        if self.initialized:
+            self.dlg.progressText.setText('')
+            self.dlg.progressBar.setValue(0)
+
+        if not self.initialized:
+            # dirty check if interface was already initialized
+            self.initialized = True
+
+            # initialize selectors
+            self.initialize_domains()
+
+            self.dlg.cbDomain.currentIndexChanged.connect(self.update_items_elements)
+
+            # add select download folder
+            self.dlg.pushButton.clicked.connect(self.select_output_file)
+
+            # on OK and Cancel click
+            self.dlg.buttonBox.accepted.connect(self.process_layers)
+            self.dlg.buttonBox.rejected.connect(self.dlg.close)
+
         # show the dialog
         self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
