@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/geobricks_qgis_plugin_faostat" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>

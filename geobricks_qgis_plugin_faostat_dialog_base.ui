@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>geobricks_qgis_plugin_faostatDialogBase</class>
+ <widget class="QDialog" name="geobricks_qgis_plugin_faostatDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>270</width>
+    <height>210</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>FAOSTAT Data Downloader</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>59</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Domain</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>59</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Element</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>110</y>
+     <width>59</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Item</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>8</x>
+     <y>27</y>
+     <width>256</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Please select a domain...</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Crops</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Crops Processed</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Live Animals</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Livestock Primary</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Livestock Processed</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Production Indices</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production: Vaue of Agricultural Production</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="comboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>8</x>
+     <y>77</y>
+     <width>256</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Please select an element...</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Area Harvested</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Yield</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Production Quantity</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Seed</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="comboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>8</x>
+     <y>127</y>
+     <width>256</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Please select an item...</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Apples</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Wheat</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>165</y>
+     <width>264</width>
+     <height>35</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Download Data</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
