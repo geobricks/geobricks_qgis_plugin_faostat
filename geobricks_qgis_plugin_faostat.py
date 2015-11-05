@@ -64,10 +64,10 @@ class geobricks_qgis_plugin_faostat:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&FAOSTAT Data Downloader')
+        self.menu = self.tr('FAOSTAT Data Downloader')
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'geobricks_qgis_plugin_faostat')
-        self.toolbar.setObjectName(u'geobricks_qgis_plugin_faostat')
+        self.toolbar = self.iface.addToolBar('geobricks_qgis_plugin_faostat')
+        self.toolbar.setObjectName('geobricks_qgis_plugin_faostat')
 
         # TODO: check if there is a better way to handle inizialition
         self.initialized = False
@@ -167,7 +167,7 @@ class geobricks_qgis_plugin_faostat:
         icon_path = ':/plugins/geobricks_qgis_plugin_faostat/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'FAOSTAT Data Downloader'),
+            text=self.tr('FAOSTAT Data Downloader'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -176,7 +176,7 @@ class geobricks_qgis_plugin_faostat:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&FAOSTAT Data Downloader'),
+                self.tr('FAOSTAT Data Downloader'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
@@ -184,12 +184,13 @@ class geobricks_qgis_plugin_faostat:
 
 
     def update_items_elements(self):
-
-        domain_name = self.dlg.cbDomain.currentText()
-        domain_code = self.domains[domain_name]
-
-        self.update_items(domain_code)
-        self.update_elements(domain_code)
+        try:
+            domain_name = self.dlg.cbDomain.currentText()
+            domain_code = self.domains[domain_name]
+            self.update_items(domain_code)
+            self.update_elements(domain_code)
+        except:
+            pass
 
     def update_items(self, domain_code):
 
@@ -198,12 +199,13 @@ class geobricks_qgis_plugin_faostat:
         data = get_items(domain_code)
 
         values = []
+        values.append('Please select an item...')
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
             values.append(d['label'])
 
-        values.sort()
+        # values.sort()
         self.dlg.cbItem.addItems(values)
 
     def update_elements(self, domain_code):
@@ -213,12 +215,13 @@ class geobricks_qgis_plugin_faostat:
         data = get_elements(domain_code)
 
         values = []
+        values.append('Please select an element...')
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
             values.append(d['label'])
 
-        values.sort()
+        # values.sort()
         self.dlg.cbElement.addItems(values)
 
 
@@ -239,12 +242,13 @@ class geobricks_qgis_plugin_faostat:
 
         # cache codes
         values = []
+        values.append('Please select a domain...')
         self.domains = {}
         for d in data:
             self.domains[d['name']] = d['id']
             values.append(d['name'])
 
-        values.sort()
+        # values.sort()
         self.dlg.cbDomain.addItems(values)
 
     def select_output_file(self):
@@ -255,7 +259,7 @@ class geobricks_qgis_plugin_faostat:
 
         # if the interface is initiated
         if self.initialized:
-            self.dlg.progressText.setText('')
+            # self.dlg.progressText.setText('')
             self.dlg.progressBar.setValue(0)
 
         if not self.initialized:
