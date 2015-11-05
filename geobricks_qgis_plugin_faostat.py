@@ -176,7 +176,7 @@ class geobricks_qgis_plugin_faostat:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr('FAOSTAT Data Downloader'),
+                self.tr(self.tr('FAOSTAT Data Downloader')),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
@@ -199,7 +199,7 @@ class geobricks_qgis_plugin_faostat:
         data = get_items(domain_code)
 
         values = []
-        values.append('Please select an item...')
+        values.append(self.tr('Please select an item...'))
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
@@ -215,7 +215,7 @@ class geobricks_qgis_plugin_faostat:
         data = get_elements(domain_code)
 
         values = []
-        values.append('Please select an element...')
+        values.append(self.tr('Please select an element...'))
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
@@ -231,18 +231,18 @@ class geobricks_qgis_plugin_faostat:
         # TODO: connect to APIs
         data = [
             {
-                'name': 'Production - Crops',
+                'name': self.tr('Production: Crops'),
                 'id': 'QC'
             },
             {
-                'name': 'Production - Crops Processed',
+                'name': self.tr('Production: Crops Processed'),
                 'id': 'QD'
             }
         ]
 
         # cache codes
         values = []
-        values.append('Please select a domain...')
+        values.append(self.tr('Please select a domain...'))
         self.domains = {}
         for d in data:
             self.domains[d['name']] = d['id']
@@ -252,7 +252,7 @@ class geobricks_qgis_plugin_faostat:
         self.dlg.cbDomain.addItems(values)
 
     def select_output_file(self):
-        filename = QFileDialog.getExistingDirectory(self.dlg, "Select Folder")
+        filename = QFileDialog.getExistingDirectory(self.dlg, self.tr('Select Folder'))
         self.dlg.download_path.setText(filename)
 
     def run(self):

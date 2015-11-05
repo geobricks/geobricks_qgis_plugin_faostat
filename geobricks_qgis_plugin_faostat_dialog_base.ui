@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GeobricksQgisPluginWorldBankDialogBase</class>
- <widget class="QDialog" name="GeobricksQgisPluginWorldBankDialogBase">
+ <class>geobricks_qgis_plugin_faostat_dialog_base</class>
+ <widget class="QDialog" name="geobricks_qgis_plugin_faostat_dialog_base">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>World Bank API Plugin</string>
+   <string>FAOSTAT Data Downloader</string>
   </property>
   <widget class="QComboBox" name="cbItem">
    <property name="geometry">
