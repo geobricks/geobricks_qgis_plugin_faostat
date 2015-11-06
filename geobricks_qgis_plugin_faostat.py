@@ -30,7 +30,7 @@ from qgis.gui import QgsMessageBar
 from PyQt4.QtCore import *
 from PyQt4.QtGui import QAction, QIcon, QFileDialog, QMessageBox
 from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
-from geobricks_faostat_connector import get_data, get_items, get_elements, get_available_years, get_data_by_year
+from geobricks_faostat_connector import get_data, get_items, get_elements
 from geobricks_join_layer_utils import copy_layer, create_layer
 import os.path
 
