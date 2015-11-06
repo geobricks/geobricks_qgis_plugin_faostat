@@ -25,8 +25,13 @@ from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
+from qgis.core import QgsField, QgsVectorLayer, QgsMapLayerRegistry, QgsGraduatedSymbolRendererV2
+from qgis.gui import QgsMessageBar
+from PyQt4.QtCore import *
+from PyQt4.QtGui import QAction, QIcon, QFileDialog, QMessageBox
 from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
-from geobricks_faostat_connector import get_items, get_elements
+from geobricks_faostat_connector import get_data, get_items, get_elements, get_available_years, get_data_by_year
+from geobricks_join_layer_utils import copy_layer, create_layer
 import os.path
 
 
@@ -255,6 +260,25 @@ class geobricks_qgis_plugin_faostat:
         filename = QFileDialog.getExistingDirectory(self.dlg, self.tr('Select Folder'))
         self.dlg.download_path.setText(filename)
 
+    def create_layer(self):
+
+        download_path = self.dlg.download_path.text()
+
+        # TODO: put 0 (it's for debugging)
+        if self.dlg.download_path.text() is None or len(self.dlg.download_path.text()) == 0:
+            QMessageBox.critical(None, self.tr('Error'), self.tr('Please insert the download folder'))
+
+        else:
+            processed_layers = 0
+            self.dlg.progressBar.setValue(processed_layers)
+
+            data = get_data('', '', '')
+
+
+
+
+
+
     def run(self):
 
         # if the interface is initiated
@@ -277,7 +301,7 @@ class geobricks_qgis_plugin_faostat:
             self.dlg.pushButton.clicked.connect(self.select_output_file)
 
             # on OK and Cancel click
-            #self.dlg.buttonBox.accepted.connect(self.process_layers)
+            self.dlg.buttonBox.accepted.connect(self.create_layer)
             self.dlg.buttonBox.rejected.connect(self.dlg.close)
 
         # show the dialog
