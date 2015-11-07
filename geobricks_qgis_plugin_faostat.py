@@ -176,9 +176,10 @@ class geobricks_qgis_plugin_faostat:
         else:
             # Notify the user
             self.bar.pushMessage(self.tr('User selection:'), self.tr('Domain: ') + domain_code + ', ' + self.tr('Element: ') + element_code + ', ' + self.tr('Item: ') + item_code, level=QgsMessageBar.INFO)
-
-        # Get data
-        # data = get_data()
+            # Get data
+            data = get_data(domain_code, element_code, item_code)
+            # Notify the user
+            self.bar.pushMessage(None, self.tr('Downloaded rows: ') + str(len(data)), level=QgsMessageBar.INFO)
 
     def on_domain_change(self, text):
 

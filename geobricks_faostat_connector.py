@@ -51,10 +51,51 @@ def get_domains(lang='en'):
         })
     return out
 
-def get_data(domain_code, elements, items, lang='en'):
-    # TODO implement getData call
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "qc.json")) as data:
-        return json.load(data)
+def get_data(domain_code, element_code, item_code, lang='en'):
+    out = []
+    url = BASE_URL + lang + '/data/'
+    values = {
+        'domain_code': domain_code,
+        'List1Codes': create_countries_parameter(domain_code, lang),
+        'List2Codes': element_code,
+        'List3Codes': item_code,
+        'List4Codes': create_years_parameter(),
+        'group_by': '',
+        'order_by': '',
+        'operator': ''
+    }
+    data = urllib.urlencode(values, True)
+    print data
+    req = urllib2.Request(url, data)
+    response = urllib2.urlopen(req)
+    print response
+    json_data = response.read()
+    print json_data
+    rows = json.loads(json_data)['data']
+    for row in rows:
+        out.append({
+            'code': row['Country Code'],
+            'value': row['Value']
+        })
+    return out
+
+def create_years_parameter():
+    years = []
+    for y in range(1961, 2015):
+        years.append(str(y))
+    return years
+
+def create_countries_parameter(domain_code, lang='en'):
+    out = []
+    r = BASE_URL + lang + '/codes/countries/' + domain_code
+    req = urllib2.Request(r)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    countries = json.loads(json_data)['data']
+    print countries
+    for country in countries:
+        out.append(str(country['code']))
+    return out
 
 
 # def get_available_years(data):
