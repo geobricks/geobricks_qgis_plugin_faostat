@@ -20,155 +20,163 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon, QFileDialog
-# Initialize Qt resources from file resources.py
-import resources
-# Import the code for the dialog
-from qgis.core import QgsField, QgsVectorLayer, QgsMapLayerRegistry, QgsGraduatedSymbolRendererV2
-from qgis.gui import QgsMessageBar
-from PyQt4.QtCore import *
-from PyQt4.QtGui import QAction, QIcon, QFileDialog, QMessageBox
-from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
-from geobricks_faostat_connector import get_data, get_items, get_elements
-from geobricks_join_layer_utils import copy_layer, create_layer
 import os.path
+
+from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import QTranslator
+from PyQt4.QtCore import qVersion
+from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtGui import QAction
+from PyQt4.QtGui import QIcon
+from PyQt4.QtGui import QFileDialog
+from PyQt4.QtCore import *
+from PyQt4.QtGui import QAction
+from PyQt4.QtGui import QIcon
+from PyQt4.QtGui import QFileDialog
+from PyQt4.QtGui import QMessageBox
+from qgis.gui import QgsMessageBar
+from PyQt4.QtGui import QLabel
+from PyQt4.QtGui import QVBoxLayout
+from PyQt4.QtGui import QHBoxLayout
+from PyQt4.QtGui import QSizePolicy
+from PyQt4.QtGui import QComboBox
+from PyQt4.QtGui import QCheckBox
+from PyQt4.QtGui import QLineEdit
+from PyQt4.QtGui import QWidget
+from PyQt4.QtGui import QPushButton
+from PyQt4.QtGui import QProgressBar
+from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
+from geobricks_faostat_connector import get_data
+from geobricks_faostat_connector import get_items
+from geobricks_faostat_connector import get_elements
+from geobricks_faostat_connector import get_domains
 
 
 class geobricks_qgis_plugin_faostat:
-    """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
-        """Constructor.
-
-        :param iface: An interface instance that will be passed to this class
-            which provides the hook by which you can manipulate the QGIS
-            application at run time.
-        :type iface: QgsInterface
-        """
-        # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
+        self.cbDomains = QComboBox()
+        self.cbElements = QComboBox()
+        self.cbItems = QComboBox()
+        self.download_folder = QLineEdit()
+        self.download_folder_button = QPushButton(self.tr('...'))
+        self.progress = QProgressBar()
+        self.add_to_canvas = QCheckBox('Add output layer to canvas')
+        self.start_download_button = QPushButton(self.tr('Start Download'))
         self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
             'geobricks_qgis_plugin_faostat_{}.qm'.format(locale))
-
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
-
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
-
-        # Create the dialog (after translation) and keep reference
         self.dlg = geobricks_qgis_plugin_faostatDialog()
-
-        # Declare instance attributes
         self.actions = []
         self.menu = self.tr('FAOSTAT Data Downloader')
-        # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar('geobricks_qgis_plugin_faostat')
         self.toolbar.setObjectName('geobricks_qgis_plugin_faostat')
-
-        # TODO: check if there is a better way to handle inizialition
         self.initialized = False
 
-    # noinspection PyMethodMayBeStatic
+    def run(self):
+
+        # Build UI
+        self.build_ui()
+
+        # Populate domains
+        domains = get_domains()
+        for domain in domains:
+            self.cbDomains.addItem(domain['label'], domain['code'])
+
+        # Test message bar
+        self.bar.pushMessage(None, str(len(domains)) + self.tr(' domains added'), level=QgsMessageBar.INFO)
+        self.bar.pushMessage(None, self.tr('Welcome!'), level=QgsMessageBar.INFO)
+        # self.bar.pushMessage(self.tr('INFO'), self.cbDomains.itemData(0), level=QgsMessageBar.INFO)
+
+    def build_ui(self):
+
+        # Domains
+        lbl_1 = QLabel(self.tr('Domain'))
+        self.cbDomains.addItem(self.tr('Please select a domain...'))
+
+        # Elements
+        lbl_2 = QLabel(self.tr('Elements'))
+        self.cbElements.addItem(self.tr('Please select a domain to populate this combo-box'))
+
+        # Items
+        lbl_3 = QLabel(self.tr('Items'))
+        self.cbItems.addItem(self.tr('Please select a domain to populate this combo-box'))
+
+        # Download Folder
+        lbl_4 = QLabel(self.tr('Download Folder'))
+        download_folder_widget = QWidget()
+        download_folder_layout = QHBoxLayout()
+        download_folder_widget.setLayout(download_folder_layout)
+        download_folder_layout.addWidget(self.download_folder)
+        download_folder_layout.addWidget(self.download_folder_button)
+
+        # Progress bar
+        lbl_5 = QLabel(self.tr('Progress'))
+        self.progress.setValue(42)
+
+        # Add to canvas
+        self.add_to_canvas.toggle()
+
+        # Widget layout
+        layout = QVBoxLayout()
+
+        # Message bar
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        layout.addWidget(self.bar)
+
+        # Add widgets to layout
+        layout.addWidget(lbl_1)
+        layout.addWidget(self.cbDomains)
+        layout.addWidget(lbl_2)
+        layout.addWidget(self.cbElements)
+        layout.addWidget(lbl_3)
+        layout.addWidget(self.cbItems)
+        layout.addWidget(lbl_4)
+        layout.addWidget(download_folder_widget)
+        layout.addWidget(self.add_to_canvas)
+        layout.addWidget(self.start_download_button)
+        layout.addWidget(lbl_5)
+        layout.addWidget(self.progress)
+
+        # Set layout
+        self.dlg.setLayout(layout)
+
+        # Show dialog
+        self.dlg.show()
+
     def tr(self, message):
-        """Get the translation for a string using Qt translation API.
-
-        We implement this ourselves since we do not inherit QObject.
-
-        :param message: String for translation.
-        :type message: str, QString
-
-        :returns: Translated version of message.
-        :rtype: QString
-        """
-        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('geobricks_qgis_plugin_faostat', message)
 
-
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
+    def add_action(self, icon_path, text, callback, enabled_flag=True, add_to_menu=True, add_to_toolbar=True,
+                   status_tip=None, whats_this=None, parent=None):
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
         action.setEnabled(enabled_flag)
-
         if status_tip is not None:
             action.setStatusTip(status_tip)
-
         if whats_this is not None:
             action.setWhatsThis(whats_this)
-
         if add_to_toolbar:
             self.toolbar.addAction(action)
-
         if add_to_menu:
             self.iface.addPluginToMenu(
                 self.menu,
                 action)
-
         self.actions.append(action)
-
         return action
 
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
         icon_path = ':/plugins/geobricks_qgis_plugin_faostat/icon.png'
         self.add_action(
             icon_path,
@@ -176,17 +184,13 @@ class geobricks_qgis_plugin_faostat:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(self.tr('FAOSTAT Data Downloader')),
                 action)
             self.iface.removeToolBarIcon(action)
-        # remove the toolbar
         del self.toolbar
-
 
     def update_items_elements(self):
         try:
@@ -198,42 +202,29 @@ class geobricks_qgis_plugin_faostat:
             pass
 
     def update_items(self, domain_code):
-
         self.dlg.cbItem.clear()
-
         data = get_items(domain_code)
-
         values = []
         values.append(self.tr('Please select an item...'))
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
             values.append(d['label'])
-
-        # values.sort()
         self.dlg.cbItem.addItems(values)
 
     def update_elements(self, domain_code):
-
         self.dlg.cbElement.clear()
-
         data = get_elements(domain_code)
-
         values = []
         values.append(self.tr('Please select an element...'))
         self.elements = {}
         for d in data:
             self.domains[d['label']] = d
             values.append(d['label'])
-
-        # values.sort()
         self.dlg.cbElement.addItems(values)
-
 
     def initialize_domains(self):
         self.dlg.cbDomain.clear()
-
-        # TODO: connect to APIs
         data = [
             {
                 'name': self.tr('Production: Crops'),
@@ -244,16 +235,12 @@ class geobricks_qgis_plugin_faostat:
                 'id': 'QD'
             }
         ]
-
-        # cache codes
         values = []
         values.append(self.tr('Please select a domain...'))
         self.domains = {}
         for d in data:
             self.domains[d['name']] = d['id']
             values.append(d['name'])
-
-        # values.sort()
         self.dlg.cbDomain.addItems(values)
 
     def select_output_file(self):
@@ -261,48 +248,10 @@ class geobricks_qgis_plugin_faostat:
         self.dlg.download_path.setText(filename)
 
     def create_layer(self):
-
         download_path = self.dlg.download_path.text()
-
-        # TODO: put 0 (it's for debugging)
         if self.dlg.download_path.text() is None or len(self.dlg.download_path.text()) == 0:
             QMessageBox.critical(None, self.tr('Error'), self.tr('Please insert the download folder'))
-
         else:
             processed_layers = 0
             self.dlg.progressBar.setValue(processed_layers)
-
             data = get_data('', '', '')
-
-
-
-
-
-
-    def run(self):
-
-        # if the interface is initiated
-        if self.initialized:
-            # self.dlg.progressText.setText('')
-            self.dlg.progressBar.setValue(0)
-
-        if not self.initialized:
-            # dirty check if interface was already initialized
-            self.initialized = True
-
-            # initialize selectors
-            self.initialize_domains()
-
-            self.update_items_elements()
-
-            self.dlg.cbDomain.currentIndexChanged.connect(self.update_items_elements)
-
-            # add select download folder
-            self.dlg.pushButton.clicked.connect(self.select_output_file)
-
-            # on OK and Cancel click
-            self.dlg.buttonBox.accepted.connect(self.create_layer)
-            self.dlg.buttonBox.rejected.connect(self.dlg.close)
-
-        # show the dialog
-        self.dlg.show()

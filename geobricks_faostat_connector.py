@@ -25,6 +25,20 @@ def get_elements(domain_code, lang='en'):
     json_data = response.read()
     return json.loads(json_data)['data']
 
+def get_domains(lang='en'):
+    out = []
+    url = BASE_URL + lang + '/groupsanddomains/'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    domains = json.loads(json_data)['data']
+    print domains
+    for domain in domains:
+        out.append({
+            'code': domain['DomainCode'],
+            'label': domain['label'] + ': ' + domain['DomainNameE']
+        })
+    return out
 
 def get_data(domain_code, elements, items, lang='en'):
     # TODO implement getData call
