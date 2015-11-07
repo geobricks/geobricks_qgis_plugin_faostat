@@ -9,21 +9,33 @@ CODES_URL = 'codes/'
 DATA_URL = 'data/'
 
 def get_items(domain_code, lang='en'):
-    r = BASE_URL + lang + "/" + CODES_URL + 'item/' + domain_code + '/?datasource=production&output_type=objects&api_key=n.a.&client_key=n.a.&domains=QC&group_subdimensions=false&subcodelists=&show_lists=&show_full_metadata=&ord='
-    print r
+    out = []
+    r = BASE_URL + lang + '/codes/items/' + domain_code
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
-    return json.loads(json_data)['data']
+    items = json.loads(json_data)['data']
+    for item in items:
+        out.append({
+            'code': item['code'],
+            'label': item['label']
+        })
+    return out
 
 
 def get_elements(domain_code, lang='en'):
-    r = BASE_URL + lang + "/" + CODES_URL + 'element/' + domain_code + '/?datasource=production&output_type=objects&api_key=n.a.&client_key=n.a.&domains=QC&group_subdimensions=false&subcodelists=&show_lists=&show_full_metadata=&ord='
-    print r
+    out = []
+    r = BASE_URL + lang + '/codes/elements/' + domain_code
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
-    return json.loads(json_data)['data']
+    elements = json.loads(json_data)['data']
+    for element in elements:
+        out.append({
+            'code': element['code'],
+            'label': element['label']
+        })
+    return out
 
 def get_domains(lang='en'):
     out = []
@@ -32,7 +44,6 @@ def get_domains(lang='en'):
     response = urllib2.urlopen(req)
     json_data = response.read()
     domains = json.loads(json_data)['data']
-    print domains
     for domain in domains:
         out.append({
             'code': domain['DomainCode'],

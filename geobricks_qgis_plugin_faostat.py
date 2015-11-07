@@ -61,9 +61,11 @@ class geobricks_qgis_plugin_faostat:
         self.cbItems = QComboBox()
         self.download_folder = QLineEdit()
         self.download_folder_button = QPushButton(self.tr('...'))
+        self.download_folder_button.clicked.connect(self.select_output_file)
         self.progress = QProgressBar()
-        self.add_to_canvas = QCheckBox('Add output layer to canvas')
+        self.add_to_canvas = QCheckBox(self.tr('Add output layer to canvas'))
         self.start_download_button = QPushButton(self.tr('Start Download'))
+        self.start_download_button.clicked.connect(self.download_data)
         self.plugin_dir = os.path.dirname(__file__)
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -95,24 +97,24 @@ class geobricks_qgis_plugin_faostat:
         # Test message bar
         self.bar.pushMessage(None, str(len(domains)) + self.tr(' domains added'), level=QgsMessageBar.INFO)
         self.bar.pushMessage(None, self.tr('Welcome!'), level=QgsMessageBar.INFO)
-        # self.bar.pushMessage(self.tr('INFO'), self.cbDomains.itemData(0), level=QgsMessageBar.INFO)
 
     def build_ui(self):
 
         # Domains
-        lbl_1 = QLabel(self.tr('Domain'))
+        lbl_1 = QLabel('<b>' + self.tr('Domains') + '</b>')
         self.cbDomains.addItem(self.tr('Please select a domain...'))
+        self.cbDomains.activated[str].connect(self.on_domain_change)
 
         # Elements
-        lbl_2 = QLabel(self.tr('Elements'))
+        lbl_2 = QLabel('<b>' + self.tr('Elements') + '</b>')
         self.cbElements.addItem(self.tr('Please select a domain to populate this combo-box'))
 
         # Items
-        lbl_3 = QLabel(self.tr('Items'))
+        lbl_3 = QLabel('<b>' + self.tr('Items') + '</b>')
         self.cbItems.addItem(self.tr('Please select a domain to populate this combo-box'))
 
         # Download Folder
-        lbl_4 = QLabel(self.tr('Download Folder'))
+        lbl_4 = QLabel('<b>' + self.tr('Download Folder') + '</b>')
         download_folder_widget = QWidget()
         download_folder_layout = QHBoxLayout()
         download_folder_widget.setLayout(download_folder_layout)
@@ -121,7 +123,7 @@ class geobricks_qgis_plugin_faostat:
 
         # Progress bar
         lbl_5 = QLabel(self.tr('Progress'))
-        self.progress.setValue(42)
+        self.progress.setValue(0)
 
         # Add to canvas
         self.add_to_canvas.toggle()
@@ -153,6 +155,52 @@ class geobricks_qgis_plugin_faostat:
 
         # Show dialog
         self.dlg.show()
+
+    def download_data(self):
+
+        # Get user selection
+        domain_code = self.cbDomains.itemData(self.cbDomains.currentIndex())
+        element_code = self.cbElements.itemData(self.cbElements.currentIndex())
+        item_code = self.cbItems.itemData(self.cbItems.currentIndex())
+        download_folder = self.download_folder.text()
+
+        # Check selection
+        if domain_code is None:
+            self.bar.pushMessage(None, self.tr('Please select a domain'), level=QgsMessageBar.CRITICAL)
+        elif element_code is None:
+            self.bar.pushMessage(None, self.tr('Please select an element'), level=QgsMessageBar.CRITICAL)
+        elif item_code is None:
+            self.bar.pushMessage(None, self.tr('Please select an item'), level=QgsMessageBar.CRITICAL)
+        elif download_folder is None or len(download_folder) == 0:
+            self.bar.pushMessage(None, self.tr('Please select a download folder'), level=QgsMessageBar.CRITICAL)
+        else:
+            # Notify the user
+            self.bar.pushMessage(self.tr('User selection:'), self.tr('Domain: ') + domain_code + ', ' + self.tr('Element: ') + element_code + ', ' + self.tr('Item: ') + item_code, level=QgsMessageBar.INFO)
+
+        # Get data
+        # data = get_data()
+
+    def on_domain_change(self, text):
+
+        # Get selected domain code
+        domain_code = self.cbDomains.itemData(self.cbDomains.currentIndex())
+
+        # Notify the user
+        self.bar.pushMessage(None, self.tr('You have selected "') + text + self.tr('", Domain Code: ') + domain_code, level=QgsMessageBar.INFO)
+
+        # Update elements list
+        elements = get_elements(domain_code)
+        self.cbElements.clear()
+        self.cbElements.addItem(self.tr('Please select an element'))
+        for element in elements:
+            self.cbElements.addItem(element['label'], element['code'])
+
+        # Update items list
+        items = get_items(domain_code)
+        self.cbItems.clear()
+        self.cbItems.addItem(self.tr('Please select an item'))
+        for item in items:
+            self.cbItems.addItem(item['label'], item['code'])
 
     def tr(self, message):
         return QCoreApplication.translate('geobricks_qgis_plugin_faostat', message)
@@ -245,7 +293,7 @@ class geobricks_qgis_plugin_faostat:
 
     def select_output_file(self):
         filename = QFileDialog.getExistingDirectory(self.dlg, self.tr('Select Folder'))
-        self.dlg.download_path.setText(filename)
+        self.download_folder.setText(filename)
 
     def create_layer(self):
         download_path = self.dlg.download_path.text()
