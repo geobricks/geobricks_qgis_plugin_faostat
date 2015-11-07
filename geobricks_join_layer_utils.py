@@ -14,7 +14,7 @@ def copy_layer(download_path, indicator_name):
 
     # copy resource file to output
     # resource_files = glob.glob(os.path.join(input_base_path, "ne_110m_admin_0_*"))
-    resource_files = glob.glob(os.path.join(input_base_path, "ne_110m_admin_0_*"))
+    resource_files = glob.glob(os.path.join(input_base_path, "NaturalEarthFAOSTAT*"))
     for resource_file in resource_files:
         base, extension = os.path.splitext(resource_file)
         copyfile(resource_file, os.path.join(download_path, clean_layer_name + extension))

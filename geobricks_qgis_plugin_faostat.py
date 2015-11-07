@@ -45,11 +45,18 @@ from PyQt4.QtGui import QLineEdit
 from PyQt4.QtGui import QWidget
 from PyQt4.QtGui import QPushButton
 from PyQt4.QtGui import QProgressBar
+from qgis.core import QgsMessageLog
 from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
 from geobricks_faostat_connector import get_data
 from geobricks_faostat_connector import get_items
 from geobricks_faostat_connector import get_elements
 from geobricks_faostat_connector import get_domains
+from geobricks_join_layer_utils import copy_layer
+# TODO: check if all imports are needed
+from qgis.core import QgsVectorLayer
+from qgis.core import QgsField
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsFeature
 
 
 class geobricks_qgis_plugin_faostat:
@@ -180,6 +187,48 @@ class geobricks_qgis_plugin_faostat:
             data = get_data(domain_code, element_code, item_code)
             # Notify the user
             self.bar.pushMessage(None, self.tr('Downloaded rows: ') + str(len(data)), level=QgsMessageBar.INFO)
+
+            year_data = self.get_year_data(data, 2012)
+            output_file = copy_layer(download_folder, "TEST")
+            layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
+            layer.dataProvider().addAttributes([QgsField(str(2012), QVariant.Double)])
+            layer.startEditing()
+            for feature in layer.getFeatures():
+                if feature['FAOSTAT'] is not None:
+                    feature_code = str(feature['FAOSTAT'])
+                    for d in year_data:
+                        data_code = str(d['code'])
+                        if data_code == feature_code:
+                            value = d['value']
+                            layer.changeAttributeValue(feature.id(), 64, float(value))
+                            tmp_feature = QgsFeature()
+                            tmp_feature.setAttributes([float(value)])
+                            layer.dataProvider().addFeatures([tmp_feature])
+            layer.commitChanges()
+
+            year_data = self.get_year_data(data, 2013)
+            layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
+            layer.dataProvider().addAttributes([QgsField(str(2013), QVariant.Double)])
+            layer.startEditing()
+            for feature in layer.getFeatures():
+                if feature['FAOSTAT'] is not None:
+                    feature_code = str(feature['FAOSTAT'])
+                    for d in year_data:
+                        data_code = str(d['code'])
+                        if data_code == feature_code:
+                            value = d['value']
+                            layer.changeAttributeValue(feature.id(), 65, float(value))
+                            tmp_feature = QgsFeature()
+                            tmp_feature.setAttributes([float(value)])
+                            layer.dataProvider().addFeatures([tmp_feature])
+            layer.commitChanges()
+
+    def get_year_data(self, data, year):
+        out = []
+        for d in data:
+            if d['year'] == str(year):
+                out.append(d)
+        return out
 
     def on_domain_change(self, text):
 

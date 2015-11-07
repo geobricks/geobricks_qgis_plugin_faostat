@@ -75,7 +75,8 @@ def get_data(domain_code, element_code, item_code, lang='en'):
     for row in rows:
         out.append({
             'code': row['Country Code'],
-            'value': row['Value']
+            'value': row['Value'],
+            'year': row['Year']
         })
     return out
 
