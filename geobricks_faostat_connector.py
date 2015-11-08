@@ -37,17 +37,31 @@ def get_elements(domain_code, lang='en'):
         })
     return out
 
-def get_domains(lang='en'):
+def get_groups(lang='en'):
     out = []
-    url = BASE_URL + lang + '/groupsanddomains/'
+    url = BASE_URL + lang + '/groups/'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    groups = json.loads(json_data)['data']
+    for group in groups:
+        out.append({
+            'code': group['code'],
+            'label': group['label']
+        })
+    return out
+
+def get_domains(groups_code, lang='en'):
+    out = []
+    url = BASE_URL + lang + '/domains/' + groups_code
     req = urllib2.Request(url)
     response = urllib2.urlopen(req)
     json_data = response.read()
     domains = json.loads(json_data)['data']
     for domain in domains:
         out.append({
-            'code': domain['DomainCode'],
-            'label': domain['label'] + ': ' + domain['DomainNameE']
+            'code': domain['code'],
+            'label': domain['label']
         })
     return out
 

@@ -51,6 +51,7 @@ from geobricks_faostat_connector import get_data
 from geobricks_faostat_connector import get_items
 from geobricks_faostat_connector import get_elements
 from geobricks_faostat_connector import get_domains
+from geobricks_faostat_connector import get_groups
 from geobricks_join_layer_utils import copy_layer
 # TODO: check if all imports are needed
 from qgis.core import QgsVectorLayer
@@ -63,6 +64,7 @@ class geobricks_qgis_plugin_faostat:
 
     def __init__(self, iface):
         self.iface = iface
+        self.cbGroups = QComboBox()
         self.cbDomains = QComboBox()
         self.cbElements = QComboBox()
         self.cbItems = QComboBox()
@@ -97,28 +99,33 @@ class geobricks_qgis_plugin_faostat:
         self.build_ui()
 
         # Populate domains
-        domains = get_domains()
-        for domain in domains:
-            self.cbDomains.addItem(domain['label'], domain['code'])
+        groups = get_groups()
+        for group in groups:
+            self.cbGroups.addItem(group['label'], group['code'])
 
         # Test message bar
-        self.bar.pushMessage(None, str(len(domains)) + self.tr(' domains added'), level=QgsMessageBar.INFO)
+        self.bar.pushMessage(None, str(len(groups)) + self.tr(' groups added'), level=QgsMessageBar.INFO)
         self.bar.pushMessage(None, self.tr('Welcome!'), level=QgsMessageBar.INFO)
 
     def build_ui(self):
 
+        # Groups
+        lbl_0 = QLabel('<b>' + self.tr('Groups') + '</b>')
+        self.cbGroups.addItem(self.tr('Please select a groups...'))
+        self.cbGroups.activated[str].connect(self.on_groups_change)
+
         # Domains
         lbl_1 = QLabel('<b>' + self.tr('Domains') + '</b>')
-        self.cbDomains.addItem(self.tr('Please select a domain...'))
+        self.cbDomains.addItem(self.tr('Please select a group to populate this combo-box...'))
         self.cbDomains.activated[str].connect(self.on_domain_change)
 
         # Elements
         lbl_2 = QLabel('<b>' + self.tr('Elements') + '</b>')
-        self.cbElements.addItem(self.tr('Please select a domain to populate this combo-box'))
+        self.cbElements.addItem(self.tr('Please select a domain to populate this combo-box...'))
 
         # Items
         lbl_3 = QLabel('<b>' + self.tr('Items') + '</b>')
-        self.cbItems.addItem(self.tr('Please select a domain to populate this combo-box'))
+        self.cbItems.addItem(self.tr('Please select a domain to populate this combo-box...'))
 
         # Download Folder
         lbl_4 = QLabel('<b>' + self.tr('Download Folder') + '</b>')
@@ -144,6 +151,8 @@ class geobricks_qgis_plugin_faostat:
         layout.addWidget(self.bar)
 
         # Add widgets to layout
+        layout.addWidget(lbl_0)
+        layout.addWidget(self.cbGroups)
         layout.addWidget(lbl_1)
         layout.addWidget(self.cbDomains)
         layout.addWidget(lbl_2)
@@ -166,13 +175,16 @@ class geobricks_qgis_plugin_faostat:
     def download_data(self):
 
         # Get user selection
+        group_code = self.cbGroups.itemData(self.cbGroups.currentIndex())
         domain_code = self.cbDomains.itemData(self.cbDomains.currentIndex())
         element_code = self.cbElements.itemData(self.cbElements.currentIndex())
         item_code = self.cbItems.itemData(self.cbItems.currentIndex())
         download_folder = self.download_folder.text()
 
         # Check selection
-        if domain_code is None:
+        if group_code is None:
+            self.bar.pushMessage(None, self.tr('Please select a group'), level=QgsMessageBar.CRITICAL)
+        elif domain_code is None:
             self.bar.pushMessage(None, self.tr('Please select a domain'), level=QgsMessageBar.CRITICAL)
         elif element_code is None:
             self.bar.pushMessage(None, self.tr('Please select an element'), level=QgsMessageBar.CRITICAL)
@@ -229,6 +241,21 @@ class geobricks_qgis_plugin_faostat:
             if d['year'] == str(year):
                 out.append(d)
         return out
+
+    def on_groups_change(self, text):
+
+        # Get selected group code
+        group_code = self.cbGroups.itemData(self.cbGroups.currentIndex())
+
+        # Notify the user
+        self.bar.pushMessage(None, self.tr('You have selected "') + text + self.tr('", Group Code: ') + group_code, level=QgsMessageBar.INFO)
+
+        # Update domains list
+        domains = get_domains(group_code)
+        self.cbDomains.clear()
+        self.cbDomains.addItem(self.tr('Please select a domain'))
+        for domain in domains:
+            self.cbDomains.addItem(domain['label'], domain['code'])
 
     def on_domain_change(self, text):
 
