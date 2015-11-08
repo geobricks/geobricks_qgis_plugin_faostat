@@ -199,9 +199,14 @@ class geobricks_qgis_plugin_faostat:
             data = get_data(domain_code, element_code, item_code)
             # Notify the user
             self.bar.pushMessage(None, self.tr('Downloaded rows: ') + str(len(data)), level=QgsMessageBar.INFO)
+            # Layer name
+            layer_name = self.cbItems.currentText().replace(' ', '_') + '_' + self.cbElements.currentText().replace(' ', '_')
+            folder_name = os.path.join(download_folder, group_code, domain_code)
+            if not os.path.exists(folder_name):
+                os.makedirs(folder_name)
 
             year_data = self.get_year_data(data, 2012)
-            output_file = copy_layer(download_folder, "TEST")
+            output_file = copy_layer(folder_name, layer_name)
             layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
             layer.dataProvider().addAttributes([QgsField(str(2012), QVariant.Double)])
             layer.startEditing()
