@@ -53,16 +53,18 @@ def get_groups(lang='en'):
 
 def get_domains(groups_code, lang='en'):
     out = []
+    blacklist = ['TM', 'FT', 'EA']
     url = BASE_URL + lang + '/domains/' + groups_code
     req = urllib2.Request(url)
     response = urllib2.urlopen(req)
     json_data = response.read()
     domains = json.loads(json_data)['data']
     for domain in domains:
-        out.append({
-            'code': domain['code'],
-            'label': domain['label']
-        })
+        if str(domain['code']) not in blacklist:
+            out.append({
+                'code': domain['code'],
+                'label': domain['label']
+            })
     return out
 
 def get_data(domain_code, element_code, item_code, lang='en'):
