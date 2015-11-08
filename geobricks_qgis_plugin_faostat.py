@@ -235,37 +235,44 @@ class geobricks_qgis_plugin_faostat:
             layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
             # Add all the years to the layer
             feature_idx = 64
+            year_to_be_shown = 2014
+            number_of_nulls = 0
             for year in range(2014, 1960, -1):
                 progress = (1 + (feature_idx - 64)) * 1.85
                 self.progress.setValue(progress)
                 self.progress_label.setText('<b>' + self.tr('Progress') + ': ' + '</b> ' + self.tr('Adding Year ') + str(year))
                 year_data = self.get_year_data(data, year)
                 layer.dataProvider().addAttributes([QgsField(str(year), QVariant.Double)])
-                layer.startEditing()
-                for feature in layer.getFeatures():
-                    if feature['FAOSTAT'] is not None:
-                        feature_code = str(feature['FAOSTAT'])
-                        for d in year_data:
-                            data_code = str(d['code'])
-                            if data_code == feature_code:
-                                value = d['value']
-                                layer.changeAttributeValue(feature.id(), (feature_idx), float(value))
-                                tmp_feature = QgsFeature()
-                                tmp_feature.setAttributes([float(value)])
-                                layer.dataProvider().addFeatures([tmp_feature])
-                layer.commitChanges()
+                if len(year_data) > 0:
+                    layer.startEditing()
+                    for feature in layer.getFeatures():
+                        if feature['FAOSTAT'] is not None:
+                            feature_code = str(feature['FAOSTAT'])
+                            for d in year_data:
+                                data_code = str(d['code'])
+                                if data_code == feature_code:
+                                    value = d['value']
+                                    layer.changeAttributeValue(feature.id(), (feature_idx), float(value))
+                                    tmp_feature = QgsFeature()
+                                    tmp_feature.setAttributes([float(value)])
+                                    layer.dataProvider().addFeatures([tmp_feature])
+                                    if value is None:
+                                        number_of_nulls += 1
+                    layer.commitChanges()
+                else:
+                    year_to_be_shown -= 1
                 feature_idx += 1
             # Add layer to canvas
             if self.add_to_canvas.isChecked():
-                renderer = self.create_join_renderer(layer, '2014', 21, QgsGraduatedSymbolRendererV2.Pretty)
-                l = QgsVectorLayer(output_file, layer_name, 'ogr')
+                renderer = self.create_join_renderer(layer, str(year_to_be_shown), 11, QgsGraduatedSymbolRendererV2.Pretty)
+                l = QgsVectorLayer(output_file, layer_name + '(' + str(year_to_be_shown) + ')', 'ogr')
                 r = renderer.clone()
-                r.setClassAttribute('2014')
+                r.setClassAttribute(str(year_to_be_shown))
                 l.setRendererV2(r)
                 QgsMapLayerRegistry.instance().addMapLayer(l)
                 self.iface.legendInterface().setLayerVisible(l, True)
 
-    def create_join_renderer(self, layer, field, classes, mode, color='Blues'):
+    def create_join_renderer(self, layer, field, classes, mode, color='PuBu'):
         symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
         style = QgsStyleV2().defaultStyle()
         colorRamp = style.colorRampRef(color)
@@ -276,7 +283,7 @@ class geobricks_qgis_plugin_faostat:
 
     def create_join_label_format(self, precision):
         format = QgsRendererRangeV2LabelFormat()
-        template = '%1 - %2 metres'
+        template = '%1 - %2'
         format.setFormat(template)
         format.setPrecision(precision)
         format.setTrimTrailingZeroes(True)
@@ -364,66 +371,6 @@ class geobricks_qgis_plugin_faostat:
             self.iface.removeToolBarIcon(action)
         del self.toolbar
 
-    def update_items_elements(self):
-        try:
-            domain_name = self.dlg.cbDomain.currentText()
-            domain_code = self.domains[domain_name]
-            self.update_items(domain_code)
-            self.update_elements(domain_code)
-        except:
-            pass
-
-    def update_items(self, domain_code):
-        self.dlg.cbItem.clear()
-        data = get_items(domain_code)
-        values = []
-        values.append(self.tr('Please select an item...'))
-        self.elements = {}
-        for d in data:
-            self.domains[d['label']] = d
-            values.append(d['label'])
-        self.dlg.cbItem.addItems(values)
-
-    def update_elements(self, domain_code):
-        self.dlg.cbElement.clear()
-        data = get_elements(domain_code)
-        values = []
-        values.append(self.tr('Please select an element...'))
-        self.elements = {}
-        for d in data:
-            self.domains[d['label']] = d
-            values.append(d['label'])
-        self.dlg.cbElement.addItems(values)
-
-    def initialize_domains(self):
-        self.dlg.cbDomain.clear()
-        data = [
-            {
-                'name': self.tr('Production: Crops'),
-                'id': 'QC'
-            },
-            {
-                'name': self.tr('Production: Crops Processed'),
-                'id': 'QD'
-            }
-        ]
-        values = []
-        values.append(self.tr('Please select a domain...'))
-        self.domains = {}
-        for d in data:
-            self.domains[d['name']] = d['id']
-            values.append(d['name'])
-        self.dlg.cbDomain.addItems(values)
-
     def select_output_file(self):
         filename = QFileDialog.getExistingDirectory(self.dlg, self.tr('Select Folder'))
         self.download_folder.setText(filename)
-
-    def create_layer(self):
-        download_path = self.dlg.download_path.text()
-        if self.dlg.download_path.text() is None or len(self.dlg.download_path.text()) == 0:
-            QMessageBox.critical(None, self.tr('Error'), self.tr('Please insert the download folder'))
-        else:
-            processed_layers = 0
-            self.dlg.progressBar.setValue(processed_layers)
-            data = get_data('', '', '')
