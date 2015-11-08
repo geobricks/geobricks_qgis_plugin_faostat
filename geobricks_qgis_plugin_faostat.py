@@ -46,6 +46,7 @@ from PyQt4.QtGui import QWidget
 from PyQt4.QtGui import QPushButton
 from PyQt4.QtGui import QProgressBar
 from qgis.core import QgsMessageLog
+from qgis.core import QgsMapLayerRegistry
 from geobricks_qgis_plugin_faostat_dialog import geobricks_qgis_plugin_faostatDialog
 from geobricks_faostat_connector import get_data
 from geobricks_faostat_connector import get_items
@@ -75,6 +76,7 @@ class geobricks_qgis_plugin_faostat:
         self.add_to_canvas = QCheckBox(self.tr('Add output layer to canvas'))
         self.start_download_button = QPushButton(self.tr('Start Download'))
         self.start_download_button.clicked.connect(self.download_data)
+        self.progress_label = QLabel('<b>' + self.tr('Progress') + '</b>')
         self.plugin_dir = os.path.dirname(__file__)
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -136,7 +138,6 @@ class geobricks_qgis_plugin_faostat:
         download_folder_layout.addWidget(self.download_folder_button)
 
         # Progress bar
-        lbl_5 = QLabel(self.tr('Progress'))
         self.progress.setValue(0)
 
         # Add to canvas
@@ -163,7 +164,7 @@ class geobricks_qgis_plugin_faostat:
         layout.addWidget(download_folder_widget)
         layout.addWidget(self.add_to_canvas)
         layout.addWidget(self.start_download_button)
-        layout.addWidget(lbl_5)
+        layout.addWidget(self.progress_label)
         layout.addWidget(self.progress)
 
         # Set layout
@@ -204,41 +205,40 @@ class geobricks_qgis_plugin_faostat:
             folder_name = os.path.join(download_folder, group_code, domain_code)
             if not os.path.exists(folder_name):
                 os.makedirs(folder_name)
-
-            year_data = self.get_year_data(data, 2012)
+            # Copy template layer
             output_file = copy_layer(folder_name, layer_name)
             layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
-            layer.dataProvider().addAttributes([QgsField(str(2012), QVariant.Double)])
-            layer.startEditing()
-            for feature in layer.getFeatures():
-                if feature['FAOSTAT'] is not None:
-                    feature_code = str(feature['FAOSTAT'])
-                    for d in year_data:
-                        data_code = str(d['code'])
-                        if data_code == feature_code:
-                            value = d['value']
-                            layer.changeAttributeValue(feature.id(), 64, float(value))
-                            tmp_feature = QgsFeature()
-                            tmp_feature.setAttributes([float(value)])
-                            layer.dataProvider().addFeatures([tmp_feature])
-            layer.commitChanges()
 
-            year_data = self.get_year_data(data, 2013)
-            layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
-            layer.dataProvider().addAttributes([QgsField(str(2013), QVariant.Double)])
-            layer.startEditing()
-            for feature in layer.getFeatures():
-                if feature['FAOSTAT'] is not None:
-                    feature_code = str(feature['FAOSTAT'])
-                    for d in year_data:
-                        data_code = str(d['code'])
-                        if data_code == feature_code:
-                            value = d['value']
-                            layer.changeAttributeValue(feature.id(), 65, float(value))
-                            tmp_feature = QgsFeature()
-                            tmp_feature.setAttributes([float(value)])
-                            layer.dataProvider().addFeatures([tmp_feature])
-            layer.commitChanges()
+            # Add all the years to the layer
+            feature_idx = 64
+            for year in range(2014, 1960, -1):
+                progress = (1 + (feature_idx - 64)) * 1.85
+                self.progress.setValue(progress)
+                self.progress_label.setText('<b>' + self.tr('Progress') + ': ' + '</b> ' + self.tr('Adding Year ') + str(year))
+                year_data = self.get_year_data(data, year)
+                layer.dataProvider().addAttributes([QgsField(str(year), QVariant.Double)])
+                layer.startEditing()
+                for feature in layer.getFeatures():
+                    if feature['FAOSTAT'] is not None:
+                        feature_code = str(feature['FAOSTAT'])
+                        for d in year_data:
+                            data_code = str(d['code'])
+                            if data_code == feature_code:
+                                value = d['value']
+                                layer.changeAttributeValue(feature.id(), (feature_idx), float(value))
+                                tmp_feature = QgsFeature()
+                                tmp_feature.setAttributes([float(value)])
+                                layer.dataProvider().addFeatures([tmp_feature])
+                layer.commitChanges()
+                feature_idx += 1
+
+            if self.add_to_canvas.isChecked():
+                l = QgsVectorLayer(output_file, layer_name, 'ogr')
+                # r = renderer.clone()
+                # r.setClassAttribute('2014')
+                # l.setRendererV2(r)
+                QgsMapLayerRegistry.instance().addMapLayer(l)
+                self.iface.legendInterface().setLayerVisible(l, True)
 
     def get_year_data(self, data, year):
         out = []
