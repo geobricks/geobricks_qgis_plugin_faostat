@@ -72,6 +72,7 @@ class geobricks_qgis_plugin_faostat:
 
     def __init__(self, iface):
         self.iface = iface
+        self.layout = QVBoxLayout()
         self.cbGroups = QComboBox()
         self.cbDomains = QComboBox()
         self.cbElements = QComboBox()
@@ -84,6 +85,7 @@ class geobricks_qgis_plugin_faostat:
         self.start_download_button = QPushButton(self.tr('Start Download'))
         self.start_download_button.clicked.connect(self.download_data)
         self.progress_label = QLabel('<b>' + self.tr('Progress') + '</b>')
+        self.bar = QgsMessageBar()
         self.plugin_dir = os.path.dirname(__file__)
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -104,6 +106,9 @@ class geobricks_qgis_plugin_faostat:
 
     def run(self):
 
+        # Initiate components
+        self.reset()
+
         # Build UI
         self.build_ui()
 
@@ -115,6 +120,23 @@ class geobricks_qgis_plugin_faostat:
         # Test message bar
         self.bar.pushMessage(None, str(len(groups)) + self.tr(' groups added'), level=QgsMessageBar.INFO)
         self.bar.pushMessage(None, self.tr('Welcome!'), level=QgsMessageBar.INFO)
+
+    def reset(self):
+        self.dlg = geobricks_qgis_plugin_faostatDialog()
+        self.layout = QVBoxLayout()
+        self.bar = QgsMessageBar()
+        self.cbGroups = QComboBox()
+        self.cbDomains = QComboBox()
+        self.cbElements = QComboBox()
+        self.cbItems = QComboBox()
+        self.download_folder = QLineEdit()
+        self.download_folder_button = QPushButton(self.tr('...'))
+        self.download_folder_button.clicked.connect(self.select_output_file)
+        self.progress = QProgressBar()
+        self.add_to_canvas = QCheckBox(self.tr('Add output layer to canvas'))
+        self.start_download_button = QPushButton(self.tr('Start Download'))
+        self.start_download_button.clicked.connect(self.download_data)
+        self.progress_label = QLabel('<b>' + self.tr('Progress') + '</b>')
 
     def build_ui(self):
 
@@ -150,32 +172,28 @@ class geobricks_qgis_plugin_faostat:
         # Add to canvas
         self.add_to_canvas.toggle()
 
-        # Widget layout
-        layout = QVBoxLayout()
-
         # Message bar
-        self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        layout.addWidget(self.bar)
+        self.layout.addWidget(self.bar)
 
         # Add widgets to layout
-        layout.addWidget(lbl_0)
-        layout.addWidget(self.cbGroups)
-        layout.addWidget(lbl_1)
-        layout.addWidget(self.cbDomains)
-        layout.addWidget(lbl_2)
-        layout.addWidget(self.cbElements)
-        layout.addWidget(lbl_3)
-        layout.addWidget(self.cbItems)
-        layout.addWidget(lbl_4)
-        layout.addWidget(download_folder_widget)
-        layout.addWidget(self.add_to_canvas)
-        layout.addWidget(self.start_download_button)
-        layout.addWidget(self.progress_label)
-        layout.addWidget(self.progress)
+        self.layout.addWidget(lbl_0)
+        self.layout.addWidget(self.cbGroups)
+        self.layout.addWidget(lbl_1)
+        self.layout.addWidget(self.cbDomains)
+        self.layout.addWidget(lbl_2)
+        self.layout.addWidget(self.cbElements)
+        self.layout.addWidget(lbl_3)
+        self.layout.addWidget(self.cbItems)
+        self.layout.addWidget(lbl_4)
+        self.layout.addWidget(download_folder_widget)
+        self.layout.addWidget(self.add_to_canvas)
+        self.layout.addWidget(self.start_download_button)
+        self.layout.addWidget(self.progress_label)
+        self.layout.addWidget(self.progress)
 
         # Set layout
-        self.dlg.setLayout(layout)
+        self.dlg.setLayout(self.layout)
 
         # Show dialog
         self.dlg.show()
@@ -215,7 +233,6 @@ class geobricks_qgis_plugin_faostat:
             # Copy template layer
             output_file = copy_layer(folder_name, layer_name)
             layer = QgsVectorLayer(output_file, 'layer_name', 'ogr')
-
             # Add all the years to the layer
             feature_idx = 64
             for year in range(2014, 1960, -1):
@@ -238,7 +255,7 @@ class geobricks_qgis_plugin_faostat:
                                 layer.dataProvider().addFeatures([tmp_feature])
                 layer.commitChanges()
                 feature_idx += 1
-
+            # Add layer to canvas
             if self.add_to_canvas.isChecked():
                 renderer = self.create_join_renderer(layer, '2014', 21, QgsGraduatedSymbolRendererV2.Pretty)
                 l = QgsVectorLayer(output_file, layer_name, 'ogr')
