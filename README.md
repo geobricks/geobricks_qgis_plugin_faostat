@@ -16,6 +16,9 @@ The FAOSTAT system is one of FAO’s most important corporate systems. It is a m
 
 > Food and Agriculture Organization Corporate Statistical Database. (2015, January 22). In Wikipedia, The Free Encyclopedia. Retrieved 16:23, August 30, 2015, from [Wikipedia](https://en.wikipedia.org/w/index.php?title=Food_and_Agriculture_Organization_Corporate_Statistical_Database&oldid=643626002)
 
+# FAOSTAT API
+This plugin uses the official [FAOSTAT API](http://faostat.github.io/faostat-api/) to retireve official FAO data and create thematic maps out of it.
+
 # Data Availability
 
 FAOSTAT data spans from 1961 to 2014 and it is updated yearly.
