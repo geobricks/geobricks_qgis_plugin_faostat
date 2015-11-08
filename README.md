@@ -34,7 +34,7 @@ The user interface allows the user to select the parameters to filter FAOSTAT da
 
 # Output
 
-Once the data is downloaded the plugin clones the base layer and add, to its attributes table, a column of values for each available year. The output layer is then stored in a folder system that follows the FAOSTAT structure. For instance, if you download data from the Production group (*code: Q*) and the Crops domain (*code: QC*), the final output will be stored in ``[DOWNLOAD_FOLDER]/Q/QC/``.
+Once the data is downloaded the plugin clones the base layer and add, to its attributes table, a column of values for each available year. The output layer is then stored in a folder system that follows the FAOSTAT structure. For instance, if you download data from the Production group (*code: Q*) and the Crops domain (*code: QC*), the final output will be stored in ``[DOWNLOAD_FOLDER]/Q/QC/``. The layer is then added to the map If the *Add output layer to the canvas* flag has been selected. The layer shows, by default, the latest available year, and it is styled with 11 *Pretty* intervals and the *PuBu* gradient. 
 
 # Credits
 
