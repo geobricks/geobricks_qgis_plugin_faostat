@@ -1,41 +1,118 @@
 <html>
 <body>
-<h3>Plugin Builder Results</h3>
 
-Congratulations! You just built a plugin for QGIS!<br/><br />
+<h1>FAOSTAT Data Downloader for QGIS</h1>
 
-<div id='help' style='font-size:.9em;'>
-Your plugin <b>geobricks_qgis_plugin_faostat</b> was created in:<br>
-&nbsp;&nbsp;<b>/Development/git-repositories/GEOBRICKS/geobricks_qgis_plugin_faostat/geobricks_qgis_plugin_faostat</b>
+<p>Download FAOSTAT statistics and create thematic maps.</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>
+            Plugin
+        </th>
+        <th>
+            Output
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td align="center">
+            <img src='images/FAOSTAT_PLUGIN.png' width="50%">
+        </td>
+        <td align="center">
+            <img src='images/FAOSTAT_OUTPUT.png' width="50%">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h1>About FAOSTAT</h1>
+
 <p>
-Your QGIS plugin directory is located at:<br>
-&nbsp;&nbsp;<b>/Users/simona/.qgis2/python/plugins</b>
-<p>
-<h3>What's Next</h3>
-<ol>
-    <li>In your plugin directory, compile the resources file using pyrcc4 (simply run <b>make</b> if you have automake or use <b>pb_tool</b>)
-    <li>Test the generated sources using <b>make test</b> (or run tests from your IDE)
-    <li>Copy the entire directory containing your new plugin to the QGIS plugin directory (see Notes below)
-    <li>Test the plugin by enabling it in the QGIS plugin manager
-    <li>Customize it by editing the implementation file <b>geobricks_qgis_plugin_faostat.py</b>
-    <li>Create your own custom icon, replacing the default <b>icon.png</b>
-    <li>Modify your user interface by opening <b>geobricks_qgis_plugin_faostat_dialog_base.ui</b> in Qt Designer
-</ol>
-Notes:
-<ul>
-    <li>You can use the <b>Makefile</b> to compile and deploy when you
-        make changes. This requires GNU make (gmake). The Makefile is ready to use, however you 
-        will have to edit it to add addional Python source files, dialogs, and translations.
-    <li>You can also use <b>pb_tool</b> to compile and deploy your plugin. Tweak the <i>pb_tool.cfg</i> file included with your plugin as you add files. Install <b>pb_tool</b> using 
-        <i>pip</i> or <i>easy_install</i>. See <a href="http://loc8.cc/pb_tool">http://loc8.cc/pb_tool</a> for more information.
-</ul>
-</div>
-<div style='font-size:.9em;'>
-<p>
-For information on writing PyQGIS code, see <a href="http://loc8.cc/pyqgis_resources">http://loc8.cc/pyqgis_resources</a> for a list of resources.
+    <a target="_blank" href="http://faostat3.fao.org/">FAOSTAT</a> is maintained by the <a target="_blank" href="http://www.fao.org/statistics">Statistics
+    Division</a> of the <a target="http://www.fao.org/">Food and Agricultural Organization of the United Nations</a>. In
+    working directly with the countries, the Statistics Division supports the development of national statistical
+    strategies, the strengthening of Institution and technical capacities, and the improvement of statistical systems.
 </p>
-</div>
-<img src="http://geoapt.com/geoapt_logo_p.png" alt='GeoApt LLC' title='GeoApt LLC' align='absmiddle'>
-&copy;2011-2015 GeoApt LLC - geoapt.com 
+
+<p>
+    The FAOSTAT system is one of FAO's most important corporate systems. It is a major component of FAO's information
+    systems, contributing to the organization's strategic objective of collecting, analyzing, interpreting, and
+    disseminating information relating to nutrition, food and agriculture for development and the fight against global
+    hunger and malnutrition.
+</p>
+
+<p>
+    <i>
+        Food and Agriculture Organization Corporate Statistical Database. (2015, January 22). In Wikipedia, The Free
+        Encyclopedia. Retrieved 16:23, August 30, 2015, from
+        <a target="_blank" href="https://en.wikipedia.org/w/index.php?title=Food_and_Agriculture_Organization_Corporate_Statistical_Database&oldid=643626002">Wikipedia</a>
+    </i>
+</p>
+
+<h1>FAOSTAT API</h1>
+
+<p>
+    This plugin uses the official <a target="_blank" href="http://faostat.github.io/faostat-api/">FAOSTAT API</a> to retireve official
+    FAO data and
+    create thematic maps out of it.
+</p>
+
+<h1>Data Availability</h1>
+
+<p>FAOSTAT data spans from 1961 to 2014 and it is updated yearly.</p>
+
+<h1>User Interface</h1>
+
+<p>The user interface allows the user to select the parameters to filter FAOSTAT data. The database is organized in
+    <code>groups</code> (<i>e.g. Production</i>) and <code>domains</code> (<i>e.g. Crops</i>). Each domain then contains
+    <code>elements</code> (<i>e.g. Area
+        Harvested</i>) and <code>items</code> (<i>e.g. Wheat</i>). The plugin applies these filters and downloads data
+    for all the available
+    years and countries.</p>
+
+<ul>
+    <li><b>Groups:</b> list of available FAOSTAT groups</li>
+    <li><b>Domains:</b> list of available FAOSTAT domains for the selected group</li>
+    <li><b>Elements:</b> list of available FAOSTAT elements for the selected domain</li>
+    <li><b>Items:</b> list of available FAOSTAT items for the selected domain</li>
+    <li><b>Download Folder:</b> folder used to store the output layer</li>
+    <li><b>Add output layer to the canvas:</b> flag that determines whether the output layer must be added to the map or
+        not
+    </li>
+    <li><b>Progress:</b> progress bar, updated for each year that is added to the output layer</li>
+</ul>
+
+<h1>Output</h1>
+
+<p>Once the data is downloaded the plugin clones the base layer and add, to its attributes table, a column of values for
+    each available year. The output layer is then stored in a folder system that follows the FAOSTAT structure. For
+    instance, if you download data from the Production group (<i>code: Q</i>) and the Crops domain (<i>code: QC</i>),
+    the
+    final output
+    will be stored in <code>[DOWNLOAD_FOLDER]/Q/QC/</code>. The layer is then added to the map If the <i>Add output
+        layer to
+        the
+        canvas</i> flag has been selected. The layer shows, by default, the latest available year, and it is styled with
+    11
+    <i>Pretty</i> intervals and the <i>PuBu</i> gradient.</p>
+
+<h1>Credits   </h1>
+
+<p>The base layer is a modified version of the <a target="_blank" href="http://www.naturalearthdata.com/downloads/110m-cultural-vectors/">Natural Earth 1:110m Cultural
+Vectors</a> that has been edited to contain an extra
+column with the FAOSTAT country codes. </p>
+
+<h1>Multilanguage     </h1>
+
+<p>The plugin is currently available in English and Italian. A project on <a target="_blank" href="https://www.transifex.com/">Transifex</a> has been
+added at <a target="_blank" href="https://www.transifex.com/geobricks/faostat-data-downloader/dashboard/">this URL</a>. Anyone can contribute to
+add more languages. Considering the FAOSTAT data is also available in French and Spanish, it would be great to have these
+languages in place. </p>
+
+<h1>Developed with </h1>
+<img src="http://www.jetbrains.com/idea/docs/logo_intellij_idea.png">
 </body>
 </html>

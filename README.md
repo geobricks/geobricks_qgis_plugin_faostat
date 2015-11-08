@@ -45,6 +45,6 @@ The base layer is a modified version of the [Natural Earth 1:110m Cultural Vecto
 
 # Multilanguage
 
-The plugin is currently available in English and Italian. A project on [Transifex](https://www.transifex.com/) has been added at [this URL](https://www.transifex.com/geobricks/faostat-data-downloader/dashboard/). Anyone can contribute to add more languages. Considering the FAOSTAT data is also available in French and Spanish, it woud be great to have these languages in place.
+The plugin is currently available in English and Italian. A project on [Transifex](https://www.transifex.com/) has been added at [this URL](https://www.transifex.com/geobricks/faostat-data-downloader/dashboard/). Anyone can contribute to add more languages. Considering the FAOSTAT data is also available in French and Spanish, it would be great to have these languages in place.
 # Developed with
 ![IntelliJ](http://www.jetbrains.com/idea/docs/logo_intellij_idea.png)
