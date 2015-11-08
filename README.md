@@ -22,14 +22,15 @@ FAOSTAT data spans from 1961 to 2014 and it is updated yearly.
 
 # User Interface
 
+The user interface allows the user to select the parameters to filter FAOSTAT data. The database is organized in ```groups``` (*e.g. Production*) and ```domains``` (*e.g. Crops*). Each domain then contains ```elements``` (*e.g. Area Harvested*) and ```items``` (*e.g. Wheat*). The plugin applies these filters and downloads data for all the available years and countries.
+
 * **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
-* **Groups:** XXX
+* **Domains:** XXX
+* **Elements:** XXX
+* **Items:** XXX
+* **Download Folder:** XXX
+* **Add output layer to the canvas:** XXX
+* **Progress:** XXX
 
 # Output
 
