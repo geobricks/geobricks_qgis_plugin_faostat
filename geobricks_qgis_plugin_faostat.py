@@ -59,6 +59,13 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsField
 from PyQt4.QtCore import QVariant
 from qgis.core import QgsFeature
+from qgis.core import QgsRendererRangeV2LabelFormat
+from qgis.core import QgsField
+from qgis.core import QgsFeature
+from qgis.core import QgsStyleV2
+from qgis.core import QgsVectorLayer
+from qgis.core import QgsGraduatedSymbolRendererV2
+from qgis.core import QgsSymbolV2
 
 
 class geobricks_qgis_plugin_faostat:
@@ -233,12 +240,30 @@ class geobricks_qgis_plugin_faostat:
                 feature_idx += 1
 
             if self.add_to_canvas.isChecked():
+                renderer = self.create_join_renderer(layer, '2014', 21, QgsGraduatedSymbolRendererV2.Pretty)
                 l = QgsVectorLayer(output_file, layer_name, 'ogr')
-                # r = renderer.clone()
-                # r.setClassAttribute('2014')
-                # l.setRendererV2(r)
+                r = renderer.clone()
+                r.setClassAttribute('2014')
+                l.setRendererV2(r)
                 QgsMapLayerRegistry.instance().addMapLayer(l)
                 self.iface.legendInterface().setLayerVisible(l, True)
+
+    def create_join_renderer(self, layer, field, classes, mode, color='Blues'):
+        symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
+        style = QgsStyleV2().defaultStyle()
+        colorRamp = style.colorRampRef(color)
+        renderer = QgsGraduatedSymbolRendererV2.createRenderer(layer, field, classes, mode, symbol, colorRamp)
+        label_format = self.create_join_label_format(2)
+        renderer.setLabelFormat(label_format)
+        return renderer
+
+    def create_join_label_format(self, precision):
+        format = QgsRendererRangeV2LabelFormat()
+        template = '%1 - %2 metres'
+        format.setFormat(template)
+        format.setPrecision(precision)
+        format.setTrimTrailingZeroes(True)
+        return format
 
     def get_year_data(self, data, year):
         out = []
