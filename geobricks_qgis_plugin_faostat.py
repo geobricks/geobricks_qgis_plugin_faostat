@@ -310,19 +310,31 @@ class geobricks_qgis_plugin_faostat:
         # Get selected domain code
         domain_code = self.cbDomains.itemData(self.cbDomains.currentIndex())
 
-        # Update elements list
-        elements = get_elements(domain_code)
-        self.cbElements.clear()
-        self.cbElements.addItem(self.tr('Please select an element'))
-        for element in elements:
-            self.cbElements.addItem(element['label'], element['code'])
+        # Check domain code
+        if domain_code is not None:
 
-        # Update items list
-        items = get_items(domain_code)
-        self.cbItems.clear()
-        self.cbItems.addItem(self.tr('Please select an item'))
-        for item in items:
-            self.cbItems.addItem(item['label'], item['code'])
+            # Update elements list
+            try:
+                elements = get_elements(domain_code)
+                self.cbElements.clear()
+                self.cbElements.addItem(self.tr('Please select an element'))
+                for element in elements:
+                    self.cbElements.addItem(element['label'], element['code'])
+            except ValueError:
+                self.bar.pushMessage(None, self.tr('No elements available for this domain. Please select another domain.'), level=QgsMessageBar.CRITICAL)
+
+            # Update items list
+            try:
+                items = get_items(domain_code)
+                self.cbItems.clear()
+                self.cbItems.addItem(self.tr('Please select an item'))
+                for item in items:
+                    self.cbItems.addItem(item['label'], item['code'])
+            except:
+                self.bar.pushMessage(None, self.tr('No items available for this domain. Please select another domain.'), level=QgsMessageBar.CRITICAL)
+
+        else:
+            self.bar.pushMessage(None, self.tr('No domain selected. Please select a domain.'), level=QgsMessageBar.CRITICAL)
 
     def tr(self, message):
         return QCoreApplication.translate('geobricks_qgis_plugin_faostat', message)

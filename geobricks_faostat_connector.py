@@ -10,7 +10,10 @@ DATA_URL = 'data/'
 
 def get_items(domain_code, lang='en'):
     out = []
-    r = BASE_URL + lang + '/codes/items/' + domain_code
+    try:
+        r = BASE_URL + lang + '/codes/items/' + domain_code
+    except TypeError:
+        raise TypeError('Domain code is null')
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
@@ -25,17 +28,23 @@ def get_items(domain_code, lang='en'):
 
 def get_elements(domain_code, lang='en'):
     out = []
-    r = BASE_URL + lang + '/codes/elements/' + domain_code
+    try:
+        r = BASE_URL + lang + '/codes/elements/' + domain_code
+    except TypeError:
+        raise TypeError('Domain code is null')
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
-    elements = json.loads(json_data)['data']
-    for element in elements:
-        out.append({
-            'code': element['code'],
-            'label': element['label']
-        })
-    return out
+    try:
+        elements = json.loads(json_data)['data']
+        for element in elements:
+            out.append({
+                'code': element['code'],
+                'label': element['label']
+            })
+        return out
+    except ValueError:
+        raise ValueError('No elements available for this domain.')
 
 def get_groups(lang='en'):
     out = []
