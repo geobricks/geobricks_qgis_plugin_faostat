@@ -235,7 +235,7 @@ class geobricks_qgis_plugin_faostat:
             year_to_be_shown = 2014
             number_of_nulls = 0
             for year in range(2014, 1960, -1):
-                progress = (1 + (feature_idx - 64)) * 1.85
+                progress = (1 + (feature_idx - 64)) * 1.86
                 self.progress.setValue(progress)
                 self.progress_label.setText('<b>' + self.tr('Progress') + ': ' + '</b> ' + self.tr('Adding Year ') + str(year))
                 year_data = self.get_year_data(data, year)
@@ -268,6 +268,8 @@ class geobricks_qgis_plugin_faostat:
                 l.setRendererV2(r)
                 QgsMapLayerRegistry.instance().addMapLayer(l)
                 self.iface.legendInterface().setLayerVisible(l, True)
+            # Close pop-up
+            self.dlg.close()
 
     def create_join_renderer(self, layer, field, classes, mode, color='PuBu'):
         symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
