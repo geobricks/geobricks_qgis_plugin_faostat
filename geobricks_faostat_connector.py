@@ -62,7 +62,7 @@ def get_groups(lang='en'):
 
 def get_domains(groups_code, lang='en'):
     out = []
-    blacklist = ['TM', 'FT', 'EA']
+    blacklist = ['TM', 'FT', 'EA', 'HS']
     url = BASE_URL + lang + '/domains/' + groups_code
     req = urllib2.Request(url)
     response = urllib2.urlopen(req)

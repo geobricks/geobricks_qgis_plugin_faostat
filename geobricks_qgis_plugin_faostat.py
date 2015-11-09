@@ -78,6 +78,11 @@ class geobricks_qgis_plugin_faostat:
         self.cbElements = QComboBox()
         self.cbItems = QComboBox()
         self.download_folder = QLineEdit()
+        try:
+            if self.last_download_folder is not None:
+                self.download_folder.setText(self.last_download_folder)
+        except:
+            self.last_download_folder = None
         self.download_folder_button = QPushButton(self.tr('...'))
         self.download_folder_button.clicked.connect(self.select_output_file)
         self.progress = QProgressBar()
@@ -106,9 +111,6 @@ class geobricks_qgis_plugin_faostat:
 
     def run(self):
 
-        # Initiate components
-        self.reset()
-
         # Build UI
         self.build_ui()
 
@@ -119,23 +121,6 @@ class geobricks_qgis_plugin_faostat:
 
         # Test message bar
         self.bar.pushMessage(None, str(len(groups)) + self.tr(' groups added'), level=QgsMessageBar.INFO)
-
-    def reset(self):
-        self.dlg = geobricks_qgis_plugin_faostatDialog()
-        self.layout = QVBoxLayout()
-        self.bar = QgsMessageBar()
-        self.cbGroups = QComboBox()
-        self.cbDomains = QComboBox()
-        self.cbElements = QComboBox()
-        self.cbItems = QComboBox()
-        self.download_folder = QLineEdit()
-        self.download_folder_button = QPushButton(self.tr('...'))
-        self.download_folder_button.clicked.connect(self.select_output_file)
-        self.progress = QProgressBar()
-        self.add_to_canvas = QCheckBox(self.tr('Add output layer to canvas'))
-        self.start_download_button = QPushButton(self.tr('Start Download'))
-        self.start_download_button.clicked.connect(self.download_data)
-        self.progress_label = QLabel('<b>' + self.tr('Progress') + '</b>')
 
     def build_ui(self):
 
@@ -378,4 +363,5 @@ class geobricks_qgis_plugin_faostat:
 
     def select_output_file(self):
         filename = QFileDialog.getExistingDirectory(self.dlg, self.tr('Select Folder'))
-        self.download_folder.setText(filename)
+        self.last_download_folder = filename
+        self.download_folder.setText(self.last_download_folder)
