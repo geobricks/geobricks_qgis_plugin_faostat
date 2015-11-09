@@ -9,27 +9,119 @@ CODES_URL = 'codes/'
 DATA_URL = 'data/'
 
 def get_items(domain_code, lang='en'):
-    r = BASE_URL + lang + "/" + CODES_URL + 'item/' + domain_code + '/?datasource=production&output_type=objects&api_key=n.a.&client_key=n.a.&domains=QC&group_subdimensions=false&subcodelists=&show_lists=&show_full_metadata=&ord='
-    print r
+    out = []
+    try:
+        r = BASE_URL + lang + '/codes/items/' + domain_code
+    except TypeError:
+        raise TypeError('Domain code is null')
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
-    return json.loads(json_data)['data']
+    items = json.loads(json_data)['data']
+    for item in items:
+        out.append({
+            'code': item['code'],
+            'label': item['label']
+        })
+    return out
 
 
 def get_elements(domain_code, lang='en'):
-    r = BASE_URL + lang + "/" + CODES_URL + 'element/' + domain_code + '/?datasource=production&output_type=objects&api_key=n.a.&client_key=n.a.&domains=QC&group_subdimensions=false&subcodelists=&show_lists=&show_full_metadata=&ord='
-    print r
+    out = []
+    try:
+        r = BASE_URL + lang + '/codes/elements/' + domain_code
+    except TypeError:
+        raise TypeError('Domain code is null')
     req = urllib2.Request(r)
     response = urllib2.urlopen(req)
     json_data = response.read()
-    return json.loads(json_data)['data']
+    try:
+        elements = json.loads(json_data)['data']
+        for element in elements:
+            out.append({
+                'code': element['code'],
+                'label': element['label']
+            })
+        return out
+    except ValueError:
+        raise ValueError('No elements available for this domain.')
 
+def get_groups(lang='en'):
+    out = []
+    url = BASE_URL + lang + '/groups/'
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    groups = json.loads(json_data)['data']
+    for group in groups:
+        out.append({
+            'code': group['code'],
+            'label': group['label']
+        })
+    return out
 
-def get_data(domain_code, elements, items, lang='en'):
-    # TODO implement getData call
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "qc.json")) as data:
-        return json.load(data)
+def get_domains(groups_code, lang='en'):
+    out = []
+    blacklist = ['TM', 'FT', 'EA', 'HS']
+    url = BASE_URL + lang + '/domains/' + groups_code
+    req = urllib2.Request(url)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    domains = json.loads(json_data)['data']
+    for domain in domains:
+        if str(domain['code']) not in blacklist:
+            out.append({
+                'code': domain['code'],
+                'label': domain['label']
+            })
+    return out
+
+def get_data(domain_code, element_code, item_code, lang='en'):
+    out = []
+    url = BASE_URL + lang + '/data/'
+    values = {
+        'domain_code': domain_code,
+        'List1Codes': create_countries_parameter(domain_code, lang),
+        'List2Codes': element_code,
+        'List3Codes': item_code,
+        'List4Codes': create_years_parameter(),
+        'group_by': '',
+        'order_by': '',
+        'operator': ''
+    }
+    data = urllib.urlencode(values, True)
+    print data
+    req = urllib2.Request(url, data)
+    response = urllib2.urlopen(req)
+    print response
+    json_data = response.read()
+    print json_data
+    rows = json.loads(json_data)['data']
+    for row in rows:
+        out.append({
+            'code': row['Country Code'],
+            'value': row['Value'],
+            'year': row['Year']
+        })
+    return out
+
+def create_years_parameter():
+    years = []
+    for y in range(1961, 2015):
+        years.append(str(y))
+    return years
+
+def create_countries_parameter(domain_code, lang='en'):
+    out = []
+    r = BASE_URL + lang + '/codes/countries/' + domain_code
+    req = urllib2.Request(r)
+    response = urllib2.urlopen(req)
+    json_data = response.read()
+    countries = json.loads(json_data)['data']
+    print countries
+    for country in countries:
+        out.append(str(country['code']))
+    return out
 
 
 # def get_available_years(data):
