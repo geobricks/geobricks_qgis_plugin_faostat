@@ -119,7 +119,6 @@ class geobricks_qgis_plugin_faostat:
 
         # Test message bar
         self.bar.pushMessage(None, str(len(groups)) + self.tr(' groups added'), level=QgsMessageBar.INFO)
-        self.bar.pushMessage(None, self.tr('Welcome!'), level=QgsMessageBar.INFO)
 
     def reset(self):
         self.dlg = geobricks_qgis_plugin_faostatDialog()
@@ -219,8 +218,6 @@ class geobricks_qgis_plugin_faostat:
         elif download_folder is None or len(download_folder) == 0:
             self.bar.pushMessage(None, self.tr('Please select a download folder'), level=QgsMessageBar.CRITICAL)
         else:
-            # Notify the user
-            self.bar.pushMessage(self.tr('User selection:'), self.tr('Domain: ') + domain_code + ', ' + self.tr('Element: ') + element_code + ', ' + self.tr('Item: ') + item_code, level=QgsMessageBar.INFO)
             # Get data
             data = get_data(domain_code, element_code, item_code)
             # Notify the user
@@ -301,9 +298,6 @@ class geobricks_qgis_plugin_faostat:
         # Get selected group code
         group_code = self.cbGroups.itemData(self.cbGroups.currentIndex())
 
-        # Notify the user
-        self.bar.pushMessage(None, self.tr('You have selected "') + text + self.tr('", Group Code: ') + group_code, level=QgsMessageBar.INFO)
-
         # Update domains list
         domains = get_domains(group_code)
         self.cbDomains.clear()
@@ -315,9 +309,6 @@ class geobricks_qgis_plugin_faostat:
 
         # Get selected domain code
         domain_code = self.cbDomains.itemData(self.cbDomains.currentIndex())
-
-        # Notify the user
-        self.bar.pushMessage(None, self.tr('You have selected "') + text + self.tr('", Domain Code: ') + domain_code, level=QgsMessageBar.INFO)
 
         # Update elements list
         elements = get_elements(domain_code)
