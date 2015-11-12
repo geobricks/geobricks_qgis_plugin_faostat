@@ -14,8 +14,14 @@ def get_items(domain_code, lang='en'):
     except TypeError:
         raise TypeError('Domain code is null')
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     items = json.loads(json_data)['data']
     for item in items:
         out.append({
@@ -32,8 +38,14 @@ def get_elements(domain_code, lang='en'):
     except TypeError:
         raise TypeError('Domain code is null')
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     try:
         elements = json.loads(json_data)['data']
         for element in elements:
@@ -49,8 +61,14 @@ def get_groups(lang='en'):
     out = []
     url = BASE_URL + lang + '/groups/'
     req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     groups = json.loads(json_data)['data']
     for group in groups:
         out.append({
@@ -64,8 +82,14 @@ def get_domains(groups_code, lang='en'):
     blacklist = ['TM', 'FT', 'EA', 'HS']
     url = BASE_URL + lang + '/domains/' + groups_code
     req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     domains = json.loads(json_data)['data']
     for domain in domains:
         if str(domain['code']) not in blacklist:
@@ -90,8 +114,14 @@ def get_data(domain_code, element_code, item_code, lang='en'):
     }
     data = urllib.urlencode(values, True)
     req = urllib2.Request(url, data)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     rows = json.loads(json_data)['data']
     for row in rows:
         out.append({
@@ -111,8 +141,14 @@ def create_countries_parameter(domain_code, lang='en'):
     out = []
     r = BASE_URL + lang + '/codes/countries/' + domain_code
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     countries = json.loads(json_data)['data']
     for country in countries:
         out.append(str(country['code']))
