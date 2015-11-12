@@ -3,154 +3,129 @@
 <context>
     <name>geobricks_qgis_plugin_faostat</name>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="133"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="86"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="136"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="89"/>
         <source>Add output layer to canvas</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="137"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="90"/>
         <source>Start Download</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="243"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="225"/>
         <source>Progress</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="360"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="350"/>
         <source>FAOSTAT Data Downloader</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="121"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="123"/>
         <source> groups added</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="122"/>
-        <source>Welcome!</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="144"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="128"/>
         <source>Groups</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="145"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="129"/>
         <source>Please select a groups...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="149"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="133"/>
         <source>Domains</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="150"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="134"/>
         <source>Please select a group to populate this combo-box...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="154"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="138"/>
         <source>Elements</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="159"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="143"/>
         <source>Please select a domain to populate this combo-box...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="158"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="142"/>
         <source>Items</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="162"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="146"/>
         <source>Download Folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="212"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="196"/>
         <source>Please select a group</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="310"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="291"/>
         <source>Please select a domain</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="325"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="307"/>
         <source>Please select an element</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="332"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="317"/>
         <source>Please select an item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="220"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="204"/>
         <source>Please select a download folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="223"/>
-        <source>User selection:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="223"/>
-        <source>Domain: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="223"/>
-        <source>Element: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="223"/>
-        <source>Item: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="227"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="209"/>
         <source>Downloaded rows: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="243"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="225"/>
         <source>Adding Year </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="320"/>
-        <source>You have selected &quot;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="305"/>
-        <source>&quot;, Group Code: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="320"/>
-        <source>&quot;, Domain Code: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="375"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="365"/>
         <source>Select Folder</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="311"/>
+        <source>No elements available for this domain. Please select another domain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="321"/>
+        <source>No items available for this domain. Please select another domain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="324"/>
+        <source>No domain selected. Please select a domain.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -164,7 +139,7 @@
 <context>
     <name>self.self</name>
     <message>
-        <location filename="../geobricks_qgis_plugin_faostat.py" line="368"/>
+        <location filename="../geobricks_qgis_plugin_faostat.py" line="358"/>
         <source>FAOSTAT Data Downloader</source>
         <translation></translation>
     </message>
