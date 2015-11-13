@@ -33,7 +33,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import QAction
 from PyQt4.QtGui import QIcon
 from PyQt4.QtGui import QFileDialog
-from PyQt4.QtGui import QMessageBox
 from qgis.gui import QgsMessageBar
 from PyQt4.QtGui import QLabel
 from PyQt4.QtGui import QVBoxLayout
@@ -54,7 +53,6 @@ from geobricks_faostat_connector import get_elements
 from geobricks_faostat_connector import get_domains
 from geobricks_faostat_connector import get_groups
 from geobricks_join_layer_utils import copy_layer
-# TODO: check if all imports are needed
 from qgis.core import QgsVectorLayer
 from qgis.core import QgsField
 from PyQt4.QtCore import QVariant
@@ -123,6 +121,9 @@ class geobricks_qgis_plugin_faostat:
         self.bar.pushMessage(None, str(len(groups)) + self.tr(' groups added'), level=QgsMessageBar.INFO)
 
     def build_ui(self):
+
+        # Reset layout
+        self.layout = QVBoxLayout()
 
         # Groups
         lbl_0 = QLabel('<b>' + self.tr('Groups') + '</b>')

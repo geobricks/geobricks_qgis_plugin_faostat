@@ -1,7 +1,6 @@
 import urllib
 import urllib2
 import json
-import os
 
 BASE_URL = 'http://fenixapps2.fao.org/api/v1.0/'
 DATASOURCE = 'production'
@@ -15,8 +14,14 @@ def get_items(domain_code, lang='en'):
     except TypeError:
         raise TypeError('Domain code is null')
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     items = json.loads(json_data)['data']
     for item in items:
         out.append({
@@ -33,8 +38,14 @@ def get_elements(domain_code, lang='en'):
     except TypeError:
         raise TypeError('Domain code is null')
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     try:
         elements = json.loads(json_data)['data']
         for element in elements:
@@ -50,8 +61,14 @@ def get_groups(lang='en'):
     out = []
     url = BASE_URL + lang + '/groups/'
     req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     groups = json.loads(json_data)['data']
     for group in groups:
         out.append({
@@ -65,8 +82,14 @@ def get_domains(groups_code, lang='en'):
     blacklist = ['TM', 'FT', 'EA', 'HS']
     url = BASE_URL + lang + '/domains/' + groups_code
     req = urllib2.Request(url)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     domains = json.loads(json_data)['data']
     for domain in domains:
         if str(domain['code']) not in blacklist:
@@ -90,12 +113,15 @@ def get_data(domain_code, element_code, item_code, lang='en'):
         'operator': ''
     }
     data = urllib.urlencode(values, True)
-    print data
     req = urllib2.Request(url, data)
-    response = urllib2.urlopen(req)
-    print response
-    json_data = response.read()
-    print json_data
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     rows = json.loads(json_data)['data']
     for row in rows:
         out.append({
@@ -115,44 +141,15 @@ def create_countries_parameter(domain_code, lang='en'):
     out = []
     r = BASE_URL + lang + '/codes/countries/' + domain_code
     req = urllib2.Request(r)
-    response = urllib2.urlopen(req)
-    json_data = response.read()
+    fp = urllib2.urlopen(req)
+    response = ''
+    while 1:
+        data = fp.read()
+        if not data:
+            break
+        response += data
+    json_data = response
     countries = json.loads(json_data)['data']
-    print countries
     for country in countries:
         out.append(str(country['code']))
     return out
-
-
-# def get_available_years(data):
-#     year_key = None
-#     value_key = None
-#     country_code_key = None
-#     years = []
-#
-#     for c in data['metadata']['dsd']:
-#         print c
-#         if 'dimension_id' in c:
-#             if 'year' in c['dimension_id'] and 'label' in c['type']:
-#                 year_key = c['key']
-#             if 'area' in c['dimension_id'] and 'code' in c['type']:
-#                 country_code_key = c['key']
-#             if 'value' in c['dimension_id'] and 'value' in c['type']:
-#                 year_key = c['key']
-#
-#     for d in data['data']:
-#         print d
-#         if d[year_key] not in years:
-#             years.append(d[year_key])
-#
-#     return years, year_key, value_key, country_code_key
-#
-#
-# def get_data_by_year(data, year_key, country_code_key, value_key, year):
-#     year = str(year)
-#     data_yearly = []
-#     for d in data:
-#         # TODO: Get Value Key by Domain Schema
-#         if d[year_key] == year and d['Value'] is not None:
-#             data_yearly.append(d)
-#     return data_yearly
