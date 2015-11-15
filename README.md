@@ -23,6 +23,10 @@ This plugin uses the official [FAOSTAT API](http://faostat.github.io/faostat-api
 
 FAOSTAT data spans from 1961 to 2014 and it is updated yearly.
 
+# Installation
+
+To install the plugin go to the *Plugins* menu and open *Manage and Install Plugins…*. Then search for *FAOSTAT* and install the plugin. When the installation is complete you should find a new icon in the toolbar, or you can access it from *Plugins > Download Data > FAOSTAT Data Downloader*.
+
 # User Interface
 
 The user interface allows the user to select the parameters to filter FAOSTAT data. The database is organized in ```groups``` (*e.g. Production*) and ```domains``` (*e.g. Crops*). Each domain then contains ```elements``` (*e.g. Area Harvested*) and ```items``` (*e.g. Wheat*). The plugin applies these filters and downloads data for all the available years and countries.
