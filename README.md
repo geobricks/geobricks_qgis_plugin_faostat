@@ -1,5 +1,6 @@
 [![License](http://img.shields.io/:license-GPL2-green.svg)](http://doge.mit-license.org)
 [![volkswagen status](https://auchenberg.github.io/volkswagen/volkswargen_ci.svg?v=1)](https://github.com/auchenberg/volkswagen)
+<a href='https://pledgie.com/campaigns/30659'><img alt='Click here to lend your support to: FAOSTAT Plugin for QGIS and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/30659.png?skin_name=chrome' border='0' ></a>
 
 # FAOSTAT Data Downloader for QGIS
 Download FAOSTAT statistics and create thematic maps.
