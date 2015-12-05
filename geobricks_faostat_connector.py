@@ -115,7 +115,9 @@ def get_data(domain_code, element_code, item_code, lang='en'):
         'List4Codes': '_1',
         'group_by': '',
         'order_by': '',
-        'operator': ''
+        'operator': '',
+        'null_values': False,
+        'limit': -1
     }
     data = urllib.urlencode(values, True)
     req = urllib2.Request(url, data)
@@ -136,8 +138,6 @@ def get_data(domain_code, element_code, item_code, lang='en'):
             'year': row['Year']
         })
     return out
-
-# print get_data('QC', '2510', '15')
 
 
 def create_years_parameter():
