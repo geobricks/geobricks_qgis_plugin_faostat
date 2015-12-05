@@ -10,7 +10,7 @@
 name=FAOSTAT Data Downloader
 qgisMinimumVersion=2.0
 description=Download FAOSTAT data to produce thematic maps.
-version=0.3
+version=0.4
 author=Geobricks.org
 email=devs@geobricks.org; simone.murzilli@geobricks.org; guido.barbaglia@geobricks.org; stefano.cudini@geobricks.org
 

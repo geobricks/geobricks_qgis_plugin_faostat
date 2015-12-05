@@ -7,6 +7,7 @@ DATASOURCE = 'production'
 CODES_URL = 'codes/'
 DATA_URL = 'data/'
 
+
 def get_items(domain_code, lang='en'):
     out = []
     try:
@@ -57,6 +58,7 @@ def get_elements(domain_code, lang='en'):
     except ValueError:
         raise ValueError('No elements available for this domain.')
 
+
 def get_groups(lang='en'):
     out = []
     url = BASE_URL + lang + '/groups/'
@@ -76,6 +78,7 @@ def get_groups(lang='en'):
             'label': group['label']
         })
     return out
+
 
 def get_domains(groups_code, lang='en'):
     out = []
@@ -99,18 +102,22 @@ def get_domains(groups_code, lang='en'):
             })
     return out
 
+
 def get_data(domain_code, element_code, item_code, lang='en'):
     out = []
     url = BASE_URL + lang + '/data/'
+    domain_codes = [domain_code]
     values = {
-        'domain_code': domain_code,
-        'List1Codes': create_countries_parameter(domain_code, lang),
+        'domain_codes': domain_codes,
+        'List1Codes': '_1',
         'List2Codes': element_code,
         'List3Codes': item_code,
-        'List4Codes': create_years_parameter(),
+        'List4Codes': '_1',
         'group_by': '',
         'order_by': '',
-        'operator': ''
+        'operator': '',
+        'null_values': False,
+        'limit': -1
     }
     data = urllib.urlencode(values, True)
     req = urllib2.Request(url, data)
@@ -122,6 +129,7 @@ def get_data(domain_code, element_code, item_code, lang='en'):
             break
         response += data
     json_data = response
+    print json_data
     rows = json.loads(json_data)['data']
     for row in rows:
         out.append({
@@ -131,11 +139,13 @@ def get_data(domain_code, element_code, item_code, lang='en'):
         })
     return out
 
+
 def create_years_parameter():
     years = []
     for y in range(1961, 2015):
         years.append(str(y))
     return years
+
 
 def create_countries_parameter(domain_code, lang='en'):
     out = []
