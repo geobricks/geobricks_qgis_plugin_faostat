@@ -2,10 +2,9 @@ import urllib
 import urllib2
 import json
 
-BASE_URL = 'http://fenixapps2.fao.org/api/v1.0/'
-DATASOURCE = 'production'
-CODES_URL = 'codes/'
-DATA_URL = 'data/'
+BASE_URL    = 'http://fenixservices.fao.org/faostat/api/v1/'
+CODES_URL   = 'codes/'
+DATA_URL    = 'data/'
 
 
 def get_items(domain_code, lang='en'):
@@ -105,23 +104,24 @@ def get_domains(groups_code, lang='en'):
 
 def get_data(domain_code, element_code, item_code, lang='en'):
     out = []
-    url = BASE_URL + lang + '/data/'
-    domain_codes = [domain_code]
+    url = BASE_URL + lang + '/data/' + domain_code + '?'
     values = {
-        'domain_codes': domain_codes,
-        'List1Codes': '_1',
-        'List2Codes': element_code,
-        'List3Codes': item_code,
-        'List4Codes': '_1',
-        'group_by': '',
-        'order_by': '',
-        'operator': '',
+        'area': '_1',
+        'area_cs': 'FAO',
+        'element': element_code,
+        'item': item_code,
+        'year': '_1',
+        'show_code': True,
+        'show_unit': True,
+        'show_flags': False,
         'null_values': False,
-        'limit': -1
+        'limit': -1,
+        'output_type': 'objects'
     }
+
     data = urllib.urlencode(values, True)
-    req = urllib2.Request(url, data)
-    fp = urllib2.urlopen(req)
+    data_url = str(url) + str(data)
+    fp = urllib2.urlopen(data_url)
     response = ''
     while 1:
         data = fp.read()
@@ -129,7 +129,6 @@ def get_data(domain_code, element_code, item_code, lang='en'):
             break
         response += data
     json_data = response
-    print json_data
     rows = json.loads(json_data)['data']
     for row in rows:
         out.append({
