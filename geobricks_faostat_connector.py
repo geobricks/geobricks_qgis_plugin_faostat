@@ -1,6 +1,7 @@
 import urllib
 import urllib2
 import json
+from qgis.core import QgsMessageLog
 
 BASE_URL    = 'http://fenixservices.fao.org/faostat/api/v1/'
 CODES_URL   = 'codes/'
@@ -118,7 +119,6 @@ def get_data(domain_code, element_code, item_code, lang='en'):
         'limit': -1,
         'output_type': 'objects'
     }
-
     data = urllib.urlencode(values, True)
     data_url = str(url) + str(data)
     fp = urllib2.urlopen(data_url)
@@ -131,11 +131,18 @@ def get_data(domain_code, element_code, item_code, lang='en'):
     json_data = response
     rows = json.loads(json_data)['data']
     for row in rows:
-        out.append({
-            'code': row['Country Code'],
-            'value': row['Value'],
-            'year': row['Year']
-        })
+        if 'Value' in row and 'Area Code' in row:
+            out.append({
+                'code': row['Area Code'],
+                'value': row['Value'],
+                'year': row['Year']
+            })
+        if 'Value' in row and 'Country Code' in row:
+            out.append({
+                'code': row['Country Code'],
+                'value': row['Value'],
+                'year': row['Year']
+            })
     return out
 
 
