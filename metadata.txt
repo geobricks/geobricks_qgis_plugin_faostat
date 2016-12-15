@@ -1,10 +1,4 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
-# is no longer supported since version 2.0.
-
-# This file should be included when you package your plugin.# Mandatory items:
+; the next section is mandatory
 
 [general]
 name=FAOSTAT Data Downloader
@@ -18,25 +12,25 @@ about=FAOSTAT is maintained by the Statistics Division of the Food and Agricultu
 
 tracker=https://github.com/geobricks/geobricks_qgis_plugin_faostat/issues
 repository=https://github.com/geobricks/geobricks_qgis_plugin_faostat
-# End of mandatory metadata
+; end of mandatory metadata
 
-# Recommended items:
-
-# Uncomment the following line and add your changelog:
+; start of optional metadata
 changelog=0.1 Draft version
 changelog=0.2 Removed all the print commands from the source code
 changelog=0.3 Better handling of the download process
 changelog=0.5 API connector updated 
 
-# Tags are comma separated with spaces allowed
+; Tags are comma separated with spaces allowed
 tags=FAOSTAT, open data, agriculture, food security
 
+; these metadata can be empty
 homepage=https://github.com/geobricks/geobricks_qgis_plugin_faostat
 category=Plugins
 icon=icon.png
-# experimental flag
+
+; experimental flag (applies to the single version)
 experimental=True
 
-# deprecated flag (applies to the whole plugin, not just a single version)
+; deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
 
